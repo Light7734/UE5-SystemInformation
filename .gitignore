@@ -1,4 +1,6 @@
-# Visual Studio 2015 user specific files
+### UnrealEngine .gitignore template...
+
+# Visual Studio user specific files
 .vs/
 
 # Compiled Object files
@@ -10,7 +12,7 @@
 # Precompiled Headers
 *.gch
 *.pch
-
+    
 # Compiled Dynamic libraries
 *.so
 *.dylib
@@ -72,3 +74,10 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+
+
+### Usre defined git ignores...
+
+# Starter content
+Content/*
