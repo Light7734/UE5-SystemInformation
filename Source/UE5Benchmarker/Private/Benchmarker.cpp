@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+
 #include "Benchmarker.h"
 
 ABenchmarker* ABenchmarker::StaticInstance = nullptr;
@@ -11,27 +12,36 @@ ABenchmarker::ABenchmarker()
 	FStatsThreadState& Stats = FStatsThreadState::GetLocalState();
 
 	// This is the name of the group where stats are.
-	FName GroupName = FName(TEXT("STAT_Platform"));
-
-	TArray<FName> GroupItems;
-	Stats.Groups.MultiFind(GroupName, GroupItems);
-
-	// Prepare the set of names and raw names of the stats we want to get
-	for (const FName& ShortName : GroupItems)
+	FName GroupNames[]
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s"), *ShortName.ToString());
-		StatsFilter.AddItem(ShortName);
-		if (FStatMessage const* LongName = Stats.ShortNameToLongName.Find(ShortName))
+		TEXT("STATGROUP_RHI"),
+		TEXT("STATGROUP_Engine"),
+		TEXT("STATGROUP_LightRendering")
+	};
+	StatsFilter.AddItem("STAT_FrameTime");
+
+	for (FName GroupName : GroupNames)
+	{
+		TArray<FName> GroupItems;
+		Stats.Groups.MultiFind(GroupName, GroupItems);
+
+		// Prepare the set of names and raw names of the stats we want to get
+		for (const FName& ShortName : GroupItems)
 		{
-			StatsFilter.AddItem(LongName->NameAndInfo.GetRawName());
+			if (FStatMessage const* LongName = Stats.ShortNameToLongName.Find(ShortName))
+			{
+				FName rawName = LongName->NameAndInfo.GetRawName();
+				UE_LOG(LogTemp, Log, TEXT("%s"), *rawName.ToString());
+				StatsFilter.AddItem(rawName);
+			}
+			else 
+				UE_LOG(LogTemp, Log, TEXT("This, this is all wrong"));
 		}
 	}
 }
 
 void ABenchmarker::Tick(float DeltaSeconds)
 {
-	FPS = 1.0f / DeltaSeconds;
-	AvgFPS = AvgFPS + ((FPS - AvgFPS) / ++TotalFrames);
 }
 
 void ABenchmarker::BeginPlay()
@@ -61,6 +71,7 @@ void ABenchmarker::BeginDestroy()
 	if (Stats.NewFrameDelegate.Remove(StaticInstance->DelegateHandle))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Removed TestBenchmarkHUD Stats.NewFrameDelegate"));
+		avgFrameStats.DumpToLog();
 	}
 	else
 	{
@@ -68,11 +79,13 @@ void ABenchmarker::BeginDestroy()
 	}
 
 	StatsMasterEnableSubtract();
+
 }
 
 void ABenchmarker::DumpCPU(int64 Frame) // static
 {
-	UE_LOG(LogTemp, Log, TEXT("ABenchmarker::DumpCPU: AA"));
+	static bool openFile = false;
+
 	if (!StaticInstance)
 	{
 		UE_LOG(LogTemp, Log, TEXT("ABenchmarker::DumpCPU: StaticInstance is invalid"));
@@ -87,6 +100,8 @@ void ABenchmarker::DumpCPU(int64 Frame) // static
 		return;
 	}
 
+	FrameStats frameStats;
+
 	// Create empty stat stack node (needed by stats gathering function)
 	FRawStatStackNode HierarchyInclusive;
 
@@ -98,29 +113,42 @@ void ABenchmarker::DumpCPU(int64 Frame) // static
 
 	// Go through all stats
 	unsigned int statCount = 0u;
+
+	auto& avgFrameStats = StaticInstance->avgFrameStats;
+	avgFrameStats.totalFrames++;
+
 	for (auto Stat : NonStackStats)
 	{
 		statCount++;
-		// Here we are getting the raw name
-		FName StatName = Stat.NameAndInfo.GetShortName();
-		FString StatNameString = StatName.GetPlainNameString();
+		FName StatName = Stat.NameAndInfo.GetRawName();
+		FString StatNameStr = *StatName.ToString();
+		double ival = static_cast<double>(Stat.GetValue_int64());
+		
+		static bool test = false;
 
-		// Here we are getting values
-		int64 iVal = 0;
-		double dVal = 0;
-		switch (Stat.NameAndInfo.GetField<EStatDataType>())
+		switch (HashStr(TCHAR_TO_ANSI(*StatNameStr + 12)))
 		{
-		case EStatDataType::ST_int64:
-			iVal = Stat.GetValue_int64();
-			UE_LOG(LogTemp, Log, TEXT("%s: %lld"), *StatName.ToString(), iVal);
+		case HashStr("RHI"):
+			UE_LOG(LogTemp, Log, TEXT("RHI"));
+			switch (HashStr(TCHAR_TO_ANSI(*StatNameStr + 22)))
+			{
+				case HashStr("RHITriangles"):
+					avgFrameStats.nTriangles = avgFrameStats.nTriangles + ((ival - avgFrameStats.nTriangles) / (double)avgFrameStats.totalFrames);
+					break;
+				case HashStr("RHIDrawPrimitiveCalls"):
+					avgFrameStats.nDrawPrimitiveCalls = avgFrameStats.nDrawPrimitiveCalls + ((ival - avgFrameStats.nDrawPrimitiveCalls) / (double)avgFrameStats.totalFrames);
+					break;
+			}
 			break;
 
-		case EStatDataType::ST_double:
-			dVal = Stat.GetValue_double();
-			UE_LOG(LogTemp, Log, TEXT("%s: %f"), dVal);
+		case HashStr("Engine"):
+			switch (HashStr(TCHAR_TO_ANSI(*StatNameStr + 25))) // #todo: shit doesn't work...
+			{
+			case HashStr("FrameTime"):
+				avgFrameStats.deltaTime += ((ival - avgFrameStats.deltaTime) / (double)avgFrameStats.totalFrames);
+				break;
+			}
 			break;
 		}
 	}
-
-	UE_LOG(LogTemp, Log, TEXT("Received Stat: %u"), statCount);
 }

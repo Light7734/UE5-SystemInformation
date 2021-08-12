@@ -8,15 +8,38 @@
 
 #include "Engine/Classes/Engine/Light.h"
 
+#include <inttypes.h>
+
 #include "Benchmarker.generated.h"
 
 struct FrameStats
 {
-	unsigned int nActiveLights;
-	unsigned int nTriangles;
-	unsigned int nVertices;
+	double nActiveLights = 0.0;
+	double nTriangles = 0.0;
+	double nVertices = 0.0;
+	double nDrawPrimitiveCalls = 0.0;
 
-	float deltaTime;
+	double totalFrames = 0.0;
+
+	float deltaTime = 0.0f;
+
+	double score = 0.0;
+
+	// temp
+	void DumpToLog()
+	{
+		UE_LOG(LogTemp, Log, TEXT("___________________________________________________"));
+		UE_LOG(LogTemp, Log, TEXT("Average nActiveLights: %f") , nActiveLights);
+		UE_LOG(LogTemp, Log, TEXT("Average nTriangles: %f") , nTriangles);
+		UE_LOG(LogTemp, Log, TEXT("Average nVertices: %f") , nVertices);
+		UE_LOG(LogTemp, Log, TEXT("Average nDrawPrimitiveCalls: %f") , nDrawPrimitiveCalls);
+		UE_LOG(LogTemp, Log, TEXT("------------------"));
+		UE_LOG(LogTemp, Log, TEXT("Average FPS: %f") , 1.0 / deltaTime);
+		UE_LOG(LogTemp, Log, TEXT("Total stat dumps: %f"), totalFrames);
+		UE_LOG(LogTemp, Log, TEXT("Final Score: %f") , score);
+		UE_LOG(LogTemp, Log, TEXT("___________________________________________________"));
+
+	}
 };
 
 struct FStatsFilter : public IItemFilter
@@ -41,15 +64,14 @@ class ABenchmarker : public AActor
 	GENERATED_BODY()
 
 private:
-	FDelegateHandle DelegateHandle;
-
-	float FPS = 0.0f;
-	float AvgFPS = 0.0f;
 	unsigned int TotalFrames = 0u;
+	FDelegateHandle DelegateHandle;
 
 	static ABenchmarker* StaticInstance;
 
 	FStatsFilter StatsFilter;
+
+	FrameStats avgFrameStats;
 
 protected:
 	float HorizontalOffset = 300.0f;
@@ -65,4 +87,10 @@ protected:
 
 private:
 	static void DumpCPU(int64 frame);
+
+	static constexpr unsigned int HashStr(const char* str, int h = 0)
+	{
+		return !str[h] || str[h] == '/' ? 5381 : (HashStr(str, h + 1) * 33) ^ str[h];
+	}
+
 };
