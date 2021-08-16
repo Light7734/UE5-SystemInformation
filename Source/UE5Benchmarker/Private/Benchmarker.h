@@ -19,13 +19,14 @@ struct FrameStats
 	double nVertices = 0.0;
 	double nDrawPrimitiveCalls = 0.0;
 
-	double totalFrames = 0.0;
+	double totalDumps = 0.0f;
+	double totalTicks = 0.0f;
 
-	float deltaTime = 0.0f;
+	double avgDeltaSeconds = 0.0f;
 
 	double score = 0.0;
 
-	// temp
+	// #todo: add CPU/GPU score multiplier
 	void DumpToLog()
 	{
 		UE_LOG(LogTemp, Log, TEXT("___________________________________________________"));
@@ -34,11 +35,12 @@ struct FrameStats
 		UE_LOG(LogTemp, Log, TEXT("Average nVertices: %f") , nVertices);
 		UE_LOG(LogTemp, Log, TEXT("Average nDrawPrimitiveCalls: %f") , nDrawPrimitiveCalls);
 		UE_LOG(LogTemp, Log, TEXT("------------------"));
-		UE_LOG(LogTemp, Log, TEXT("Average FPS: %f") , 1.0 / deltaTime);
-		UE_LOG(LogTemp, Log, TEXT("Total stat dumps: %f"), totalFrames);
-		UE_LOG(LogTemp, Log, TEXT("Final Score: %f") , score);
+		UE_LOG(LogTemp, Log, TEXT("Average FPS: %f") , 1.0 / avgDeltaSeconds);
+		UE_LOG(LogTemp, Log, TEXT("Total stat dumps: %f"), totalTicks);
+		UE_LOG(LogTemp, Log, TEXT("Total game ticks: %f"), totalTicks);
+		// #todo: use a proper algorithm
+		UE_LOG(LogTemp, Log, TEXT("Final Score: %f") , (nActiveLights + nTriangles + nVertices + nDrawPrimitiveCalls) * (1.0f / avgDeltaSeconds / 60.0f));
 		UE_LOG(LogTemp, Log, TEXT("___________________________________________________"));
-
 	}
 };
 
@@ -72,6 +74,9 @@ private:
 	FStatsFilter StatsFilter;
 
 	FrameStats avgFrameStats;
+
+	float AvgDeltaSeconds = 0.0f;
+	unsigned int TotalTicks = 0u;
 
 protected:
 	float HorizontalOffset = 300.0f;

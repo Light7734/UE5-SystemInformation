@@ -9,13 +9,15 @@ ABenchmarker::ABenchmarker()
 {
 	StaticInstance = this;
 
+	SetActorTickEnabled(true);
+
 	FStatsThreadState& Stats = FStatsThreadState::GetLocalState();
 
 	// This is the name of the group where stats are.
+	// #todo: use specific stats instead of the stat groups if possible
 	FName GroupNames[]
 	{
 		TEXT("STATGROUP_RHI"),
-		TEXT("STATGROUP_Engine"),
 		TEXT("STATGROUP_LightRendering")
 	};
 	StatsFilter.AddItem("STAT_FrameTime");
@@ -42,10 +44,18 @@ ABenchmarker::ABenchmarker()
 
 void ABenchmarker::Tick(float DeltaSeconds)
 {
+	Super::Tick(DeltaSeconds);
+
+	AvgDeltaSeconds += (DeltaSeconds - AvgDeltaSeconds) / ++TotalTicks;
 }
 
 void ABenchmarker::BeginPlay()
 {
+	// I have no idea why but if I don't put these here, it doesn't work
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bTickEvenWhenPaused = true;
+	PrimaryActorTick.TickGroup = TG_PrePhysics;
+
 	Super::BeginPlay();
 
 	FStatsThreadState& Stats = FStatsThreadState::GetLocalState();
@@ -68,10 +78,14 @@ void ABenchmarker::BeginDestroy()
 
 	FStatsThreadState& Stats = FStatsThreadState::GetLocalState();
 
+	avgFrameStats.avgDeltaSeconds = AvgDeltaSeconds;
+	avgFrameStats.totalTicks = TotalTicks;
+
+	avgFrameStats.DumpToLog();
+
 	if (Stats.NewFrameDelegate.Remove(StaticInstance->DelegateHandle))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Removed TestBenchmarkHUD Stats.NewFrameDelegate"));
-		avgFrameStats.DumpToLog();
 	}
 	else
 	{
@@ -79,7 +93,6 @@ void ABenchmarker::BeginDestroy()
 	}
 
 	StatsMasterEnableSubtract();
-
 }
 
 void ABenchmarker::DumpCPU(int64 Frame) // static
@@ -115,37 +128,26 @@ void ABenchmarker::DumpCPU(int64 Frame) // static
 	unsigned int statCount = 0u;
 
 	auto& avgFrameStats = StaticInstance->avgFrameStats;
-	avgFrameStats.totalFrames++;
+	avgFrameStats.totalDumps++;
 
 	for (auto Stat : NonStackStats)
 	{
 		statCount++;
 		FName StatName = Stat.NameAndInfo.GetRawName();
 		FString StatNameStr = *StatName.ToString();
-		double ival = static_cast<double>(Stat.GetValue_int64());
 		
 		static bool test = false;
 
 		switch (HashStr(TCHAR_TO_ANSI(*StatNameStr + 12)))
 		{
 		case HashStr("RHI"):
-			UE_LOG(LogTemp, Log, TEXT("RHI"));
 			switch (HashStr(TCHAR_TO_ANSI(*StatNameStr + 22)))
 			{
-				case HashStr("RHITriangles"):
-					avgFrameStats.nTriangles = avgFrameStats.nTriangles + ((ival - avgFrameStats.nTriangles) / (double)avgFrameStats.totalFrames);
-					break;
-				case HashStr("RHIDrawPrimitiveCalls"):
-					avgFrameStats.nDrawPrimitiveCalls = avgFrameStats.nDrawPrimitiveCalls + ((ival - avgFrameStats.nDrawPrimitiveCalls) / (double)avgFrameStats.totalFrames);
-					break;
-			}
-			break;
-
-		case HashStr("Engine"):
-			switch (HashStr(TCHAR_TO_ANSI(*StatNameStr + 25))) // #todo: shit doesn't work...
-			{
-			case HashStr("FrameTime"):
-				avgFrameStats.deltaTime += ((ival - avgFrameStats.deltaTime) / (double)avgFrameStats.totalFrames);
+			case HashStr("RHITriangles"):
+				avgFrameStats.nTriangles += (Stat.GetValue_int64() - avgFrameStats.nTriangles) / (double)avgFrameStats.totalDumps;
+				break;
+			case HashStr("RHIDrawPrimitiveCalls"):
+				avgFrameStats.nDrawPrimitiveCalls += (Stat.GetValue_int64() - avgFrameStats.nDrawPrimitiveCalls) / (double)avgFrameStats.totalDumps;
 				break;
 			}
 			break;
