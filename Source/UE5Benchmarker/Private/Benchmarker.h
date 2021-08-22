@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,38 +6,56 @@
 
 #include "Engine/Classes/Engine/Light.h"
 
-#include <inttypes.h>
-
 #include "Benchmarker.generated.h"
 
-struct FrameStats
+struct FBenchmarkStat
 {
-	double nActiveLights = 0.0;
-	double nTriangles = 0.0;
-	double nVertices = 0.0;
-	double nDrawPrimitiveCalls = 0.0;
+	double avgValue = 0.0;
+	double dumpCount = 0.0;
 
-	double totalDumps = 0.0f;
-	double totalTicks = 0.0f;
+	inline void SubmitDump(double value) { avgValue += (value - avgValue) / ++dumpCount; }
+};
 
-	double avgDeltaSeconds = 0.0f;
+struct FBenchmarkResults
+{
+	FBenchmarkStat nShadowedLights;
+	FBenchmarkStat nLightsInjectedIntoTranslucency;
+	FBenchmarkStat nLightsUsingStandardDeferred;
+	FBenchmarkStat nActiveLights;
 
-	double score = 0.0;
+	FBenchmarkStat nTriangles;
+	FBenchmarkStat nDrawPrimitiveCalls;
 
-	// #todo: add CPU/GPU score multiplier
+	FBenchmarkStat deltaSeconds;
+
+	uint64_t totalDumps;
+	uint64_t totalTicks;
+
+	double cpuScoreMultiplier = 0.0; // :#todo
+	double gpuScoreMultiplier = 0.0; // :#todo
+
+	double finalScore = 69.420; // noice
+
+	void CalculateFinalScore()
+	{
+		// #todo: add some algorithm
+	}
+
 	void DumpToLog()
 	{
 		UE_LOG(LogTemp, Log, TEXT("___________________________________________________"));
-		UE_LOG(LogTemp, Log, TEXT("Average nActiveLights: %f") , nActiveLights);
-		UE_LOG(LogTemp, Log, TEXT("Average nTriangles: %f") , nTriangles);
-		UE_LOG(LogTemp, Log, TEXT("Average nVertices: %f") , nVertices);
-		UE_LOG(LogTemp, Log, TEXT("Average nDrawPrimitiveCalls: %f") , nDrawPrimitiveCalls);
+		UE_LOG(LogTemp, Log, TEXT("Average nShadowedLights: %f [%f]"), nShadowedLights.avgValue, nShadowedLights.dumpCount);
+		UE_LOG(LogTemp, Log, TEXT("Average nLightsInjectedIntoTranslucency: %f [%f]"), nLightsInjectedIntoTranslucency.avgValue, nLightsInjectedIntoTranslucency.dumpCount);
+		UE_LOG(LogTemp, Log, TEXT("Average nLightsUsingStandardDeferred: %f [%f]"), nLightsUsingStandardDeferred.avgValue, nLightsUsingStandardDeferred.dumpCount);
+		UE_LOG(LogTemp, Log, TEXT("Average nTriangles: %f [%f]") , nTriangles.avgValue, nTriangles.dumpCount);
+		UE_LOG(LogTemp, Log, TEXT("Average nDrawPrimitiveCalls: %f [%f]") , nDrawPrimitiveCalls.avgValue, nDrawPrimitiveCalls.dumpCount);
+
 		UE_LOG(LogTemp, Log, TEXT("------------------"));
-		UE_LOG(LogTemp, Log, TEXT("Average FPS: %f") , 1.0 / avgDeltaSeconds);
-		UE_LOG(LogTemp, Log, TEXT("Total stat dumps: %f"), totalTicks);
-		UE_LOG(LogTemp, Log, TEXT("Total game ticks: %f"), totalTicks);
-		// #todo: use a proper algorithm
-		UE_LOG(LogTemp, Log, TEXT("Final Score: %f") , (nActiveLights + nTriangles + nVertices + nDrawPrimitiveCalls) * (1.0f / avgDeltaSeconds / 60.0f));
+		UE_LOG(LogTemp, Log, TEXT("Average FPS: %f [%f]"), 1.0f / deltaSeconds.avgValue, deltaSeconds.dumpCount);
+		UE_LOG(LogTemp, Log, TEXT("Total stat dumps: %llu"), totalDumps);
+		UE_LOG(LogTemp, Log, TEXT("Total game ticks: %llu"), totalTicks);
+
+		UE_LOG(LogTemp, Log, TEXT("Final Score: %f") , finalScore);
 		UE_LOG(LogTemp, Log, TEXT("___________________________________________________"));
 	}
 };
@@ -66,20 +82,12 @@ class ABenchmarker : public AActor
 	GENERATED_BODY()
 
 private:
-	unsigned int TotalFrames = 0u;
-	FDelegateHandle DelegateHandle;
-
 	static ABenchmarker* StaticInstance;
 
+	FBenchmarkResults BenchmarkResults;
+
+	FDelegateHandle DelegateHandle;
 	FStatsFilter StatsFilter;
-
-	FrameStats avgFrameStats;
-
-	float AvgDeltaSeconds = 0.0f;
-	unsigned int TotalTicks = 0u;
-
-protected:
-	float HorizontalOffset = 300.0f;
 
 public:
 	ABenchmarker();
@@ -93,9 +101,14 @@ protected:
 private:
 	static void DumpCPU(int64 frame);
 
+	static unsigned int HashStrToNextSlash(const char* str, int h = 0)
+	{
+		return str[h] == '/' ? 5381 : (HashStrToNextSlash(str, h + 1) * 33) ^ str[h];
+	}
+
 	static constexpr unsigned int HashStr(const char* str, int h = 0)
 	{
-		return !str[h] || str[h] == '/' ? 5381 : (HashStr(str, h + 1) * 33) ^ str[h];
+		return !str[h] ? 5381 : (HashStr(str, h + 1) * 33) ^ str[h];
 	}
 
 };

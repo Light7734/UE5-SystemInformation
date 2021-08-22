@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// #todo: comment stuff
 
 #include "Benchmarker.h"
 
@@ -8,13 +7,8 @@ ABenchmarker* ABenchmarker::StaticInstance = nullptr;
 ABenchmarker::ABenchmarker()
 {
 	StaticInstance = this;
-
 	SetActorTickEnabled(true);
 
-	FStatsThreadState& Stats = FStatsThreadState::GetLocalState();
-
-	// This is the name of the group where stats are.
-	// #todo: use specific stats instead of the stat groups if possible
 	FName GroupNames[]
 	{
 		TEXT("STATGROUP_RHI"),
@@ -22,22 +16,47 @@ ABenchmarker::ABenchmarker()
 	};
 	StatsFilter.AddItem("STAT_FrameTime");
 
+	FStatsThreadState& Stats = FStatsThreadState::GetLocalState();
 	for (FName GroupName : GroupNames)
 	{
-		TArray<FName> GroupItems;
-		Stats.Groups.MultiFind(GroupName, GroupItems);
+		TArray<FName> StatGroup;
+		Stats.Groups.MultiFind(GroupName, StatGroup);
 
-		// Prepare the set of names and raw names of the stats we want to get
-		for (const FName& ShortName : GroupItems)
+		for (const FName& Stat : StatGroup)
 		{
-			if (FStatMessage const* LongName = Stats.ShortNameToLongName.Find(ShortName))
+			TArray<FName> GroupFilter
 			{
-				FName rawName = LongName->NameAndInfo.GetRawName();
-				UE_LOG(LogTemp, Log, TEXT("%s"), *rawName.ToString());
-				StatsFilter.AddItem(rawName);
+				TEXT("STAT_RHITriangles"),
+				TEXT("STAT_RHIDrawPrimitiveCalls"),
+
+				TEXT("STAT_NumReflectiveShadowMapLights"),
+				TEXT("STAT_NumLightsUsingStandardDeferred"),
+				TEXT("STAT_NumLightsUsingSimpleTiledDeferred"),
+				TEXT("STAT_NumLightsUsingTiledDeferred"),
+				TEXT("STAT_NumLightsInjectedIntoTranslucency"),
+				TEXT("STAT_NumUnshadowedLights"),
+				TEXT("STAT_NumLightFunctionOnlyLights"),
+				TEXT("STAT_NumShadowedLights"),
+				TEXT("STAT_LightRendering"),
+				TEXT("STAT_DirectLightRenderingTime"),
+				TEXT("STAT_TranslucentInjectTime"),
+
+			};
+			int32 index = GroupFilter.Find(*Stat.ToString());
+			if (index != INDEX_NONE)
+			{
+				FStatMessage const* LongName = Stats.ShortNameToLongName.Find(Stat);
+				if (LongName)
+				{
+					FName rawName = LongName->NameAndInfo.GetRawName();
+					UE_LOG(LogTemp, Log, TEXT("Added [%s] to the stats filter (hash:%u)"), *Stat.ToString(), HashStrToNextSlash(TCHAR_TO_UTF8(*Stat.ToString())));
+					StatsFilter.AddItem(rawName);
+				}
+				else
+					UE_LOG(LogTemp, Log, TEXT("Failed to add [%s] to the stats filter!"), *Stat.ToString());
 			}
-			else 
-				UE_LOG(LogTemp, Log, TEXT("This, this is all wrong"));
+			else
+				UE_LOG(LogTemp, Log, TEXT("Skipped: %s"), *Stat.ToString());
 		}
 	}
 }
@@ -46,12 +65,12 @@ void ABenchmarker::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	AvgDeltaSeconds += (DeltaSeconds - AvgDeltaSeconds) / ++TotalTicks;
+	BenchmarkResults.deltaSeconds.SubmitDump(DeltaSeconds);
+	BenchmarkResults.totalTicks++;
 }
 
 void ABenchmarker::BeginPlay()
 {
-	// I have no idea why but if I don't put these here, it doesn't work
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bTickEvenWhenPaused = true;
 	PrimaryActorTick.TickGroup = TG_PrePhysics;
@@ -70,6 +89,7 @@ void ABenchmarker::BeginPlay()
 	{
 		UE_LOG(LogTemp, Log, TEXT("Failed to add TestBenchmarkHUD Stats.NewFrameDelegate"));
 	}
+
 }
 
 void ABenchmarker::BeginDestroy()
@@ -78,12 +98,7 @@ void ABenchmarker::BeginDestroy()
 
 	FStatsThreadState& Stats = FStatsThreadState::GetLocalState();
 
-	avgFrameStats.avgDeltaSeconds = AvgDeltaSeconds;
-	avgFrameStats.totalTicks = TotalTicks;
-
-	avgFrameStats.DumpToLog();
-
-	if (Stats.NewFrameDelegate.Remove(StaticInstance->DelegateHandle))
+	if (Stats.NewFrameDelegate.Remove(DelegateHandle))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Removed TestBenchmarkHUD Stats.NewFrameDelegate"));
 	}
@@ -91,8 +106,9 @@ void ABenchmarker::BeginDestroy()
 	{
 		UE_LOG(LogTemp, Log, TEXT("Failed to remove TestBenchmarkHUD Stats.NewFrameDelegate"));
 	}
-
 	StatsMasterEnableSubtract();
+
+	BenchmarkResults.DumpToLog();
 }
 
 void ABenchmarker::DumpCPU(int64 Frame) // static
@@ -113,44 +129,61 @@ void ABenchmarker::DumpCPU(int64 Frame) // static
 		return;
 	}
 
-	FrameStats frameStats;
-
-	// Create empty stat stack node (needed by stats gathering function)
 	FRawStatStackNode HierarchyInclusive;
 
-	// Prepare the array for stat messages
 	TArray<FStatMessage> NonStackStats;
 
-	// COLLECT ALL STATS TO THE ARRAY HERE
 	Stats.UncondenseStackStats(Frame, HierarchyInclusive, &StaticInstance->StatsFilter, &NonStackStats);
 
-	// Go through all stats
 	unsigned int statCount = 0u;
 
-	auto& avgFrameStats = StaticInstance->avgFrameStats;
-	avgFrameStats.totalDumps++;
+	auto& BenchmarkResults = StaticInstance->BenchmarkResults;
+	BenchmarkResults.totalDumps++;
 
 	for (auto Stat : NonStackStats)
 	{
 		statCount++;
 		FName StatName = Stat.NameAndInfo.GetRawName();
 		FString StatNameStr = *StatName.ToString();
-		
-		static bool test = false;
 
-		switch (HashStr(TCHAR_TO_ANSI(*StatNameStr + 12)))
+		switch (HashStrToNextSlash(TCHAR_TO_ANSI(*StatNameStr + 12)))
 		{
 		case HashStr("RHI"):
-			switch (HashStr(TCHAR_TO_ANSI(*StatNameStr + 22)))
+			switch (HashStrToNextSlash(TCHAR_TO_ANSI(*StatNameStr + 22)))
 			{
 			case HashStr("RHITriangles"):
-				avgFrameStats.nTriangles += (Stat.GetValue_int64() - avgFrameStats.nTriangles) / (double)avgFrameStats.totalDumps;
+				BenchmarkResults.nTriangles.SubmitDump((double)Stat.GetValue_int64());
 				break;
 			case HashStr("RHIDrawPrimitiveCalls"):
-				avgFrameStats.nDrawPrimitiveCalls += (Stat.GetValue_int64() - avgFrameStats.nDrawPrimitiveCalls) / (double)avgFrameStats.totalDumps;
+				BenchmarkResults.nDrawPrimitiveCalls.SubmitDump((double)Stat.GetValue_int64());
 				break;
+
+			default:
+				UE_LOG(LogTemp, Log, TEXT("Unhandled THI stat: %s"), *Stat.NameAndInfo.GetShortName().ToString());
 			}
 			break;
+		case HashStr("LightRendering"):
+			switch (HashStrToNextSlash(TCHAR_TO_ANSI(*StatNameStr + 33)))
+			{
+			case HashStr("NumShadowedLights"):
+				BenchmarkResults.nShadowedLights.SubmitDump((double)Stat.GetValue_int64());
+				break;
+
+			case HashStr("NumLightsInjectedIntoTranslucency"):
+				BenchmarkResults.nLightsInjectedIntoTranslucency.SubmitDump((double)Stat.GetValue_int64());
+				break;
+
+			case HashStr("NumLightsUsingStandardDeferred"):
+				BenchmarkResults.nLightsUsingStandardDeferred.SubmitDump((double)Stat.GetValue_int64());
+				break;
+
+			default:
+				UE_LOG(LogTemp, Log, TEXT("Unhandled LightRendering stat: %s"), *Stat.NameAndInfo.GetShortName().ToString());
+			}
+			break;
+
+		default:
+			UE_LOG(LogTemp, Log, TEXT("Unhandled [unknown group] stat: %s"), *Stat.NameAndInfo.GetShortName().ToString());
 		}
 	}
 }
