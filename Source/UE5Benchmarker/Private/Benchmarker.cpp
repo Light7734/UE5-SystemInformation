@@ -40,8 +40,8 @@ ABenchmarker::ABenchmarker()
 				TEXT("STAT_LightRendering"),
 				TEXT("STAT_DirectLightRenderingTime"),
 				TEXT("STAT_TranslucentInjectTime"),
-
 			};
+
 			int32 index = GroupFilter.Find(*Stat.ToString());
 			if (index != INDEX_NONE)
 			{
@@ -65,8 +65,8 @@ void ABenchmarker::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	BenchmarkResults.deltaSeconds.SubmitDump(DeltaSeconds);
-	BenchmarkResults.totalTicks++;
+	BenchmarkResults.DeltaSeconds.SubmitStatValue(DeltaSeconds);
+	BenchmarkResults.TotalGameTicks++;
 }
 
 void ABenchmarker::BeginPlay()
@@ -89,7 +89,6 @@ void ABenchmarker::BeginPlay()
 	{
 		UE_LOG(LogTemp, Log, TEXT("Failed to add TestBenchmarkHUD Stats.NewFrameDelegate"));
 	}
-
 }
 
 void ABenchmarker::BeginDestroy()
@@ -138,8 +137,8 @@ void ABenchmarker::DumpCPU(int64 Frame) // static
 	unsigned int statCount = 0u;
 
 	auto& BenchmarkResults = StaticInstance->BenchmarkResults;
-	BenchmarkResults.totalDumps++;
-
+	BenchmarkResults.TotalStatDumps++;
+\
 	for (auto Stat : NonStackStats)
 	{
 		statCount++;
@@ -152,29 +151,29 @@ void ABenchmarker::DumpCPU(int64 Frame) // static
 			switch (HashStrToNextSlash(TCHAR_TO_ANSI(*StatNameStr + 22)))
 			{
 			case HashStr("RHITriangles"):
-				BenchmarkResults.nTriangles.SubmitDump((double)Stat.GetValue_int64());
+				BenchmarkResults.Triangles.SubmitStatMessage(Stat);
 				break;
 			case HashStr("RHIDrawPrimitiveCalls"):
-				BenchmarkResults.nDrawPrimitiveCalls.SubmitDump((double)Stat.GetValue_int64());
+				BenchmarkResults.DrawPrimitiveCalls.SubmitStatMessage(Stat);
 				break;
 
 			default:
-				UE_LOG(LogTemp, Log, TEXT("Unhandled THI stat: %s"), *Stat.NameAndInfo.GetShortName().ToString());
+				UE_LOG(LogTemp, Log, TEXT("Unhandled RHI stat: %s"), *Stat.NameAndInfo.GetShortName().ToString());
 			}
 			break;
 		case HashStr("LightRendering"):
 			switch (HashStrToNextSlash(TCHAR_TO_ANSI(*StatNameStr + 33)))
 			{
 			case HashStr("NumShadowedLights"):
-				BenchmarkResults.nShadowedLights.SubmitDump((double)Stat.GetValue_int64());
+				BenchmarkResults.ShadowedLights.SubmitStatMessage(Stat);
 				break;
 
 			case HashStr("NumLightsInjectedIntoTranslucency"):
-				BenchmarkResults.nLightsInjectedIntoTranslucency.SubmitDump((double)Stat.GetValue_int64());
+				BenchmarkResults.LightsInjectedIntoTranslucency.SubmitStatMessage(Stat);
 				break;
 
 			case HashStr("NumLightsUsingStandardDeferred"):
-				BenchmarkResults.nLightsUsingStandardDeferred.SubmitDump((double)Stat.GetValue_int64());
+				BenchmarkResults.LightsUsingStandardDeferred.SubmitStatMessage(Stat);
 				break;
 
 			default:
