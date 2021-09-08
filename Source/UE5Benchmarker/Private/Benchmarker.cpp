@@ -138,7 +138,7 @@ void ABenchmarker::DumpCPU(int64 Frame) // static
 
 	auto& BenchmarkResults = StaticInstance->BenchmarkResults;
 	BenchmarkResults.TotalStatDumps++;
-\
+
 	for (auto Stat : NonStackStats)
 	{
 		statCount++;

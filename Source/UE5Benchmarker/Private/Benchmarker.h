@@ -10,18 +10,17 @@
 
 struct FBenchmarkStat
 {
-
 	float AvgValue = 0.0f;
 	float MaxValue = FLT_MIN;
 	float MinValue = FLT_MAX;
 
 	float SubmitCounter = 0.0f;
 
-	inline void SubmitStatMessage(FStatMessage message) 
-	{ 
+	inline void SubmitStatMessage(FStatMessage message)
+	{
 		float value;
 
-		switch(message.NameAndInfo.GetField<EStatDataType>())
+		switch (message.NameAndInfo.GetField<EStatDataType>())
 		{
 		case EStatDataType::ST_int64:
 			value = (float)message.GetValue_int64();
@@ -83,8 +82,8 @@ struct FBenchmarkResults
 		UE_LOG(LogTemp, Log, TEXT("Average LightsUsingStandardDeferred: %f [%f]"), LightsUsingStandardDeferred.AvgValue, LightsUsingStandardDeferred.SubmitCounter);
 
 		// RHI
-		UE_LOG(LogTemp, Log, TEXT("Average Triangles: %f [%f]") , Triangles.AvgValue, Triangles.SubmitCounter);
-		UE_LOG(LogTemp, Log, TEXT("Average DrawPrimitiveCalls: %f [%f]") , DrawPrimitiveCalls.AvgValue, DrawPrimitiveCalls.SubmitCounter);
+		UE_LOG(LogTemp, Log, TEXT("Average Triangles: %f [%f]"), Triangles.AvgValue, Triangles.SubmitCounter);
+		UE_LOG(LogTemp, Log, TEXT("Average DrawPrimitiveCalls: %f [%f]"), DrawPrimitiveCalls.AvgValue, DrawPrimitiveCalls.SubmitCounter);
 
 		UE_LOG(LogTemp, Log, TEXT("------------------"));
 		UE_LOG(LogTemp, Log, TEXT("Average FPS: %f [%f]"), 1.0f / DeltaSeconds.AvgValue, DeltaSeconds.SubmitCounter);
@@ -92,7 +91,7 @@ struct FBenchmarkResults
 		UE_LOG(LogTemp, Log, TEXT("Total stat dumps: %llu"), TotalStatDumps);
 		UE_LOG(LogTemp, Log, TEXT("Total game ticks: %llu"), TotalGameTicks);
 
-		UE_LOG(LogTemp, Log, TEXT("Final Score: %f") , FinalScore);
+		UE_LOG(LogTemp, Log, TEXT("Final Score: %f"), FinalScore);
 		UE_LOG(LogTemp, Log, TEXT("___________________________________________________"));
 	}
 };
@@ -113,6 +112,7 @@ struct FStatsFilter : public IItemFilter
 	}
 };
 
+UCLASS()
 class ABenchmarker : public AActor
 {
 	GENERATED_BODY()
