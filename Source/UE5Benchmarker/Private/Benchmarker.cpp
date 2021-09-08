@@ -107,7 +107,8 @@ void ABenchmarker::BeginDestroy()
 	}
 	StatsMasterEnableSubtract();
 
-	BenchmarkResults.DumpToLog();
+	BenchmarkResults.CalculateFinalScore();
+	BenchmarkResults.LogInfo();
 }
 
 void ABenchmarker::DumpCPU(int64 Frame) // static

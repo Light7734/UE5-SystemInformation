@@ -6,6 +6,7 @@
 
 #include "Engine/Classes/Engine/Light.h"
 
+
 #include "Benchmarker.generated.h"
 
 struct FBenchmarkStat
@@ -15,6 +16,18 @@ struct FBenchmarkStat
 	float MinValue = FLT_MAX;
 
 	float SubmitCounter = 0.0f;
+
+	FName Description;
+
+	FBenchmarkStat(FName description = TEXT("NO_DESCRIPTION"))
+		: Description(description)
+	{
+	}
+
+	inline void LogInfo()
+	{
+		UE_LOG(LogTemp, Log, TEXT("%s: [avg %.2f] [min %.2f] [max %.2f] (%.0f)"), *Description.ToString(), MinValue, AvgValue, MaxValue, SubmitCounter);
+	}
 
 	inline void SubmitStatMessage(FStatMessage message)
 	{
@@ -49,15 +62,14 @@ struct FBenchmarkStat
 
 struct FBenchmarkResults
 {
-	FBenchmarkStat ShadowedLights;
-	FBenchmarkStat LightsInjectedIntoTranslucency;
-	FBenchmarkStat LightsUsingStandardDeferred;
-	FBenchmarkStat ActiveLights;
+	FBenchmarkStat ShadowedLights = FBenchmarkStat(TEXT("ShadowedLights"));
+	FBenchmarkStat LightsInjectedIntoTranslucency = FBenchmarkStat(TEXT("LightsInjectedIntoTranslucency"));
+	FBenchmarkStat LightsUsingStandardDeferred = FBenchmarkStat(TEXT("LightsUsingStandardDeferred"));
 
-	FBenchmarkStat Triangles;
-	FBenchmarkStat DrawPrimitiveCalls;
+	FBenchmarkStat Triangles = FBenchmarkStat(TEXT("Triangles"));
+	FBenchmarkStat DrawPrimitiveCalls = FBenchmarkStat(TEXT("DrawPrimitiveCalls"));
 
-	FBenchmarkStat DeltaSeconds;
+	FBenchmarkStat DeltaSeconds = FBenchmarkStat(TEXT("DeltaSeconds"));
 
 	uint64_t TotalStatDumps;
 	uint64_t TotalGameTicks;
@@ -72,26 +84,26 @@ struct FBenchmarkResults
 		// #todo: add some algorithm
 	}
 
-	void DumpToLog()
+	void LogInfo()
 	{
 		UE_LOG(LogTemp, Log, TEXT("___________________________________________________"));
-
-		// LightRendering
-		UE_LOG(LogTemp, Log, TEXT("Average ShadowedLights: %f [%f]"), ShadowedLights.AvgValue, ShadowedLights.SubmitCounter);
-		UE_LOG(LogTemp, Log, TEXT("Average LightsInjectedIntoTranslucency: %f [%f]"), LightsInjectedIntoTranslucency.AvgValue, LightsInjectedIntoTranslucency.SubmitCounter);
-		UE_LOG(LogTemp, Log, TEXT("Average LightsUsingStandardDeferred: %f [%f]"), LightsUsingStandardDeferred.AvgValue, LightsUsingStandardDeferred.SubmitCounter);
+		  
+		// Light Rendering
+		ShadowedLights.LogInfo();
+		LightsInjectedIntoTranslucency.LogInfo();
+		LightsUsingStandardDeferred.LogInfo();
 
 		// RHI
-		UE_LOG(LogTemp, Log, TEXT("Average Triangles: %f [%f]"), Triangles.AvgValue, Triangles.SubmitCounter);
-		UE_LOG(LogTemp, Log, TEXT("Average DrawPrimitiveCalls: %f [%f]"), DrawPrimitiveCalls.AvgValue, DrawPrimitiveCalls.SubmitCounter);
+		Triangles.LogInfo();
+		DrawPrimitiveCalls.LogInfo();
 
-		UE_LOG(LogTemp, Log, TEXT("------------------"));
-		UE_LOG(LogTemp, Log, TEXT("Average FPS: %f [%f]"), 1.0f / DeltaSeconds.AvgValue, DeltaSeconds.SubmitCounter);
+		// Game Ticks
+		DeltaSeconds.LogInfo();
 
 		UE_LOG(LogTemp, Log, TEXT("Total stat dumps: %llu"), TotalStatDumps);
 		UE_LOG(LogTemp, Log, TEXT("Total game ticks: %llu"), TotalGameTicks);
 
-		UE_LOG(LogTemp, Log, TEXT("Final Score: %f"), FinalScore);
+		UE_LOG(LogTemp, Log, TEXT("Final Score = %f"), FinalScore);
 		UE_LOG(LogTemp, Log, TEXT("___________________________________________________"));
 	}
 };
