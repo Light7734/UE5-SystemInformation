@@ -1,4 +1,4 @@
-#include "systemcommand.h"
+#include "SystemCommand.h"
 
 FSystemCommand::FSystemCommand(const char* command /* = "" */)
 {

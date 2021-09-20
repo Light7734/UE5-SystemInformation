@@ -7,8 +7,8 @@
 #include "cpuinfodelegate.h"
 #include "gpuinfodelegate.h"
 #include "motherboardinfodelegate.h"
-#include "raminfo.h"
-#include "osinfodelegate.h"
+#include "InfoRam.h"
+#include "InfoOS.h"
 
 // Sets default values
 ASystemInformation::ASystemInformation()
@@ -50,9 +50,9 @@ ASystemInformation::ASystemInformation()
 		UE_LOG(LogTemp, Log, TEXT("Motherboard Version = %s"), *FString(iter->version().c_str()));
 	}
 
-	FRAMInformationGatherer RAMInformationGatherer;
-	std::vector<FRAMInformation> RAMsInformation = RAMInformationGatherer.GetRAMsInformation();
-	UE_LOG(LogTemp, Log, TEXT("RAM stick(s) installed %i"), RAMInformationGatherer.GetRAMCount());
+	FRAMInformationCollector RAMInformationCollector;
+	std::vector<FRAMInformation> RAMsInformation = RAMInformationCollector.GetRAMsInformation();
+	UE_LOG(LogTemp, Log, TEXT("RAM stick(s) installed %i"), RAMInformationCollector.GetRAMCount());
 
 	for (const auto& RAMInformation : RAMsInformation)
 	{
@@ -84,30 +84,25 @@ ASystemInformation::ASystemInformation()
 		UE_LOG(LogTemp, Log, TEXT("GPU Video Processor = %s"), *FString(iter->videoProcessor().c_str()));
 	}
 
-	std::unique_ptr<OSInfoDelegate> osInfo = std::make_unique<OSInfoDelegate>();
-	std::vector<OSInfo> osInfoVector = osInfo->osInfoVector();
-	UE_LOG(LogTemp, Log, TEXT("OS(s) installed %i"), osInfo->numberOfOSInfoItems());
-	for (std::vector<OSInfo>::const_iterator iter = osInfoVector.begin(); iter != osInfoVector.end(); iter++)
+	FOSInfoCollector OSInfoCollector;
+	std::vector<FOSInformation> OSsInformation = OSInfoCollector.GetOSInformation();
+	for (const auto& OSInfo : OSsInformation)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Information for OS #%i"), iter->osNumber());
-		UE_LOG(LogTemp, Log, TEXT("OS Name = %s"), *FString(iter->name().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Manufacturer = %s"), *FString(iter->manufacturer().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Caption = %s"), *FString(iter->caption().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Version = %s"), *FString(iter->version().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Current User = %s"), *FString(iter->currentUser().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Install Date = %s"), *FString(iter->installDate().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Build Number = %s"), *FString(iter->buildNumber().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Last Boot Up Time = %s"), *FString(iter->lastBootUpTime().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Boot Device = %s"), *FString(iter->bootDevice().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Total Virtual Memory = %s"), *FString(iter->totalVirtualMemory().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Total Visible Memory = %s"), *FString(iter->totalVisibleMemory().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Total Swap Size = %s"), *FString(iter->totalSwapSize().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Serial Number = %s"), *FString(iter->serialNumber().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Free Physical Memory = %s"), *FString(iter->freePhysicalMemory().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Free Virtual Memory = %s"), *FString(iter->freeVirtualMemory().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Free Paging File Space = %s"), *FString(iter->freePagingFileSpace().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Used Paging File Space = %s"), *FString(iter->usedPagingFileSpace().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Current Date Time = %s"), *FString(iter->currentDateTime().c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Name = %s"), *FString(OSInfo.Name.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Manufacturer = %s"), *FString(OSInfo.Manufacturer.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Caption = %s"), *FString(OSInfo.Caption.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Version = %s"), *FString(OSInfo.Version.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Current User = %s"), *FString(OSInfo.CurrentUser.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Install Date = %s"), *FString(OSInfo.InstallDate.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Build Number = %s"), *FString(OSInfo.BuildNumber.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Last Boot Up Time = %s"), *FString(OSInfo.LastBootUpTime.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Boot Device = %s"), *FString(OSInfo.BootDevice.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Total Virtual Memory = %s"), *FString(OSInfo.TotalVirtualMemory.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Total Visible Memory = %s"), *FString(OSInfo.TotalVisibleMemory.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Total Swap Size = %s"), *FString(OSInfo.TotalSwapSize.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Serial Number = %s"), *FString(OSInfo.SerialNumber.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Free Physical Memory = %s"), *FString(OSInfo.FreePhysicalMemory.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("OS Free Virtual Memory = %s"), *FString(OSInfo.FreeVirtualMemory.c_str()));
 	}
 }
 
