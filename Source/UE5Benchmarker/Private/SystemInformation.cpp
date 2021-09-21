@@ -6,7 +6,7 @@
 
 #include "cpuinfodelegate.h"
 #include "gpuinfodelegate.h"
-#include "motherboardinfodelegate.h"
+#include "InfoMotherboard.h"
 #include "InfoRam.h"
 #include "InfoOS.h"
 
@@ -36,18 +36,16 @@ ASystemInformation::ASystemInformation()
 		UE_LOG(LogTemp, Log, TEXT("Current CPU Temperature = %s"), *FString(iter->currentTemperature().c_str()));
 	}
 
-	std::unique_ptr<MotherboardInfoDelegate> moboInfo = std::make_unique<MotherboardInfoDelegate>();
-	std::vector<MotherboardInfo> moboInfoVector = moboInfo->motherboardInfoVector();
-	UE_LOG(LogTemp, Log, TEXT("Motherboard(s) installed %i"), moboInfo->numberOfMotherboardInfoItems());
-
-	for (std::vector<MotherboardInfo>::const_iterator iter = moboInfoVector.begin(); iter != moboInfoVector.end(); iter++)
+	FMotherboardInfoCollector motherboardInfoCollector;
+	std::vector<FMotherboardInfo> motherboardsInfo = motherboardInfoCollector.GetMotherboardsInformation();
+	for (const auto& motherboardInfo : motherboardsInfo)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Information for motherboard #%i"), iter->motherboardNumber());
-		UE_LOG(LogTemp, Log, TEXT("Motherboard Name = %s"), *FString(iter->name().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Motherboard Manufacturer = %s"), *FString(iter->manufacturer().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Motherboard Chipset = %s"), *FString(iter->chipset().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Motherboard Serial Number = %s"), *FString(iter->serialNumber().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Motherboard Version = %s"), *FString(iter->version().c_str()));
+		UE_LOG(LogTemp, Log, TEXT("Information for motherboard #%i"), motherboardInfo.Index);
+		UE_LOG(LogTemp, Log, TEXT("Motherboard Name = %s"), *FString(motherboardInfo.Name.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("Motherboard Manufacturer = %s"), *FString(motherboardInfo.Manufacturer.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("Motherboard Chipset = %s"), *FString(motherboardInfo.Chipset.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("Motherboard Serial Number = %s"), *FString(motherboardInfo.SerialNumber.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("Motherboard Version = %s"), *FString(motherboardInfo.Version.c_str()));
 	}
 
 	FRAMInformationCollector RAMInformationCollector;

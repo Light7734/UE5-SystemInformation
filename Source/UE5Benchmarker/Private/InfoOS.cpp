@@ -1,4 +1,5 @@
 #include "InfoOS.h"
+#include "SystemCommand.h"
 
 #define ARCHITECTURE_IDENTIFIER_STRING "OSArchitecture="
 #define CAPTION_INDENTIFIER_STRING "Caption="
@@ -39,19 +40,25 @@
 FOSInfoCollector::FOSInfoCollector()
 	: OSCount(0u)
 {
-	FSystemCommand systemCommand(OS_INFO_QUERY_STRING);
+	FSystemCommand OSQuery(OS_INFO_QUERY_STRING);
 
-	if (systemCommand.HasFailed())
-		return; // #todo
+	if (OSQuery.HasFailed())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to query operating system"));
+		return;
+	}
 
-	FetchOSCount(systemCommand.GetResult());
-
+	// Fetch OS count
+	for (auto iter = OSQuery.GetResult().begin(); iter != OSQuery.GetResult().end(); iter++)
+		if (iter->find(OS_INSTANCE_QUERY_STRING) != std::string::npos)
+			OSCount++;
+	
 	for (uint8_t i = 0; i < OSCount; i++)
 	{
 		FOSInformation OSInformation;
-		OSInformation.Index = i;
+		OSInformation.Index = i + 1;
 
-		for (auto iter = systemCommand.GetResult().begin(); iter->find(OS_INFO_END_IDENTIFIER_STRING) == std::string::npos; iter++)
+		for (auto iter = OSQuery.GetResult().begin(); iter->find(OS_INFO_END_IDENTIFIER_STRING) == std::string::npos; iter++)
 		{
 			// name
 			if (FIND_IN_ITER(NAME_IDENTIFIER_STRING))
@@ -105,7 +112,7 @@ FOSInfoCollector::FOSInfoCollector()
 					continue;
 				}
 				else {
-					long long int totalVirtualMemory{ 0 };
+					long long int totalVirtualMemory = 0;
 					try {
 						totalVirtualMemory = std::stoll(totalVirtualMemoryString);
 						OSInformation.TotalVirtualMemory = std::to_string(totalVirtualMemory / KILOBYTES_PER_MEGABYTE) + "MB (" + std::to_string(totalVirtualMemory) + " KB)";
@@ -125,7 +132,7 @@ FOSInfoCollector::FOSInfoCollector()
 					continue;
 				}
 				else {
-					long long int totalVisibleMemory{ 0 };
+					long long int totalVisibleMemory = 0;
 					try {
 						totalVisibleMemory = std::stoll(totalVisibleMemoryString);
 						OSInformation.TotalVisibleMemory = std::to_string(totalVisibleMemory / KILOBYTES_PER_MEGABYTE) + "MB (" + std::to_string(totalVisibleMemory) + " KB)";
@@ -146,7 +153,7 @@ FOSInfoCollector::FOSInfoCollector()
 					continue;
 				}
 				else {
-					long long int totalSwapSize{ 0 };
+					long long int totalSwapSize = 0;
 					try {
 						totalSwapSize = std::stoll(totalSwapSizeString);
 						OSInformation.TotalVisibleMemory = std::to_string(totalSwapSize / KILOBYTES_PER_MEGABYTE) + "MB (" + std::to_string(totalSwapSize) + " KB)";
@@ -170,11 +177,4 @@ FOSInfoCollector::FOSInfoCollector()
 
 		OSsInformation.push_back(OSInformation);
 	}
-}
-
-void FOSInfoCollector::FetchOSCount(const std::vector<std::string>& data)
-{
-	for (auto iter = data.begin(); iter != data.end(); iter++)
-		if (iter->find(OS_INSTANCE_QUERY_STRING) != std::string::npos)
-			OSCount++;
 }

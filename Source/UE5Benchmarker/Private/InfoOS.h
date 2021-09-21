@@ -3,6 +3,8 @@
 #include "InfoBase.h"
 #include "SystemCommand.h"
 
+#include <vector>
+
 struct FOSInformation
 {
     std::string Name = UNDETECTED_INFO_STR;
@@ -32,9 +34,8 @@ public:
 
 	inline const std::vector<FOSInformation>& GetOSInformation() const { return OSsInformation; }
 	inline uint8_t GetOSCount() const { return OSCount; }
+
 private:
 	std::vector<FOSInformation> OSsInformation;
 	uint8_t OSCount;
-
-	void FetchOSCount(const std::vector<std::string>& data);
 };

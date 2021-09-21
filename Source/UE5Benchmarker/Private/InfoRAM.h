@@ -1,7 +1,8 @@
 #pragma once
 
 #include "InfoBase.h"
-#include "systemcommand.h"
+
+#include <vector>
 
 struct FRAMInformation
 {

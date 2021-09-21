@@ -1,4 +1,5 @@
 #include "InfoRAM.h"
+#include "systemcommand.h"
 
 #define NAME_IDENTIFIER_STRING "DeviceLocator="
 #define MANUFACTURER_IDENTIFIER_STRING "Manufacturer="
@@ -14,16 +15,20 @@
 #define RAM_INSTANCE_IDENTIFIER_STRING "ConfiguredClockSpeed="
 #define RAM_INFO_END_IDENTIFIER_STRING "Version="
 
-
 FRAMInformationCollector::FRAMInformationCollector()
 	: RAMCount(0u)
 {
-	FSystemCommand systemCommand(RAM_INFO_QUERY_STRING);
+	FSystemCommand RAMsQuery(RAM_INFO_QUERY_STRING);
+	if (RAMsQuery.HasFailed())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to query RAMs"));
+		return;
+	}
 
-	if (systemCommand.HasFailed())
-		return; // #todo
-
-	FetchNumberOfRams(systemCommand.GetResult());
+	// fetch ram-count
+	for (auto iter = RAMsQuery.GetResult().begin(); iter != RAMsQuery.GetResult().end(); iter++)
+		if (iter->find(RAM_INSTANCE_IDENTIFIER_STRING) != std::string::npos)
+			RAMCount++;
 
 	for (uint8_t i = 0u; i < RAMCount; i++)
 	{
@@ -32,7 +37,7 @@ FRAMInformationCollector::FRAMInformationCollector()
 
 		std::string backupClockSpeed = "";
 
-		for (auto iter = systemCommand.GetResult().begin(); iter->find(RAM_INFO_END_IDENTIFIER_STRING) == std::string::npos; iter++)
+		for (auto iter = RAMsQuery.GetResult().begin(); iter->find(RAM_INFO_END_IDENTIFIER_STRING) == std::string::npos; iter++)
 		{
 			// name
 			if (FIND_IN_ITER(NAME_IDENTIFIER_STRING))
@@ -204,7 +209,5 @@ std::string FRAMInformationCollector::DetermineFormFactor(const std::string &for
 
 void FRAMInformationCollector::FetchNumberOfRams(const std::vector<std::string>& data)
 {
-	for (auto iter = data.begin(); iter != data.end(); iter++)
-		if (iter->find(RAM_INSTANCE_IDENTIFIER_STRING) != std::string::npos)
-			RAMCount++;
+
 }
