@@ -1,7 +1,6 @@
 #pragma once
 
 #include "InfoBase.h"
-#include "SystemCommand.h"
 
 #include <vector>
 

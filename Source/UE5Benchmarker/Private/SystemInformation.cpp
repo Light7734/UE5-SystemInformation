@@ -5,7 +5,7 @@
 #include <intrin.h>
 
 #include "cpuinfodelegate.h"
-#include "gpuinfodelegate.h"
+#include "InfoGPU.h"
 #include "InfoMotherboard.h"
 #include "InfoRam.h"
 #include "InfoOS.h"
@@ -51,7 +51,6 @@ ASystemInformation::ASystemInformation()
 	FRAMInformationCollector RAMInformationCollector;
 	std::vector<FRAMInformation> RAMsInformation = RAMInformationCollector.GetRAMsInformation();
 	UE_LOG(LogTemp, Log, TEXT("RAM stick(s) installed %i"), RAMInformationCollector.GetRAMCount());
-
 	for (const auto& RAMInformation : RAMsInformation)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Information for RAM stick #%i"), RAMInformation.Index);
@@ -65,21 +64,21 @@ ASystemInformation::ASystemInformation()
 		UE_LOG(LogTemp, Log, TEXT("RAM Clock Speed = %s"), *FString(RAMInformation.ClockSpeed.c_str()));
 	}
 
-	std::unique_ptr<GPUInfoDelegate> gpuInfo = std::make_unique<GPUInfoDelegate>();
-	std::vector<GPUInfo> gpuInfoVector = gpuInfo->gpuInfoVector();
-	UE_LOG(LogTemp, Log, TEXT("GPU(s) installed %i"), gpuInfo->numberOfGPUInfoItems());
-	for (std::vector<GPUInfo>::const_iterator iter = gpuInfoVector.begin(); iter != gpuInfoVector.end(); iter++)
+	FGPUInfoCollector GPUInfoCollector;
+	std::vector<FGPUInfo> GPUsInfo = GPUInfoCollector.GetGPUsInformation();
+	for (const auto& GPUInfo : GPUsInfo)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Information for GPU #%i"), iter->gpuNumber());
-		UE_LOG(LogTemp, Log, TEXT("GPU Name = %s"), *FString(iter->name().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("GPU Manufacturer = %s"), *FString(iter->manufacturer().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("GPU Caption = %s"), *FString(iter->caption().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("GPU Adapter RAM = %s"), *FString(iter->adapterRAM().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("GPU Refresh Rate = %s"), *FString(iter->refreshRate().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("GPU Driver Version = %s"), *FString(iter->driverVersion().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("GPU Video Architecture = %s"), *FString(iter->videoArchitecture().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("GPU Video Mode Description = %s"), *FString(iter->videoModeDescription().c_str()));
-		UE_LOG(LogTemp, Log, TEXT("GPU Video Processor = %s"), *FString(iter->videoProcessor().c_str()));
+		UE_LOG(LogTemp, Log, TEXT("Information for GPU #%i"), GPUInfo.Index);
+		UE_LOG(LogTemp, Log, TEXT("GPU Name = %s"), *FString(GPUInfo.Name.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("GPU Manufacturer = %s"), *FString(GPUInfo.Manufacturer.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("GPU Caption = %s"), *FString(GPUInfo.Caption.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("GPU Adapter RAM = %s"), *FString(GPUInfo.AdapterRAM.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("GPU Refresh Rate = %s"), *FString(GPUInfo.RefreshRate.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("GPU Driver Version = %s"), *FString(GPUInfo.DriverVersion.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("GPU Video Architecture = %s"), *FString(GPUInfo.VideoArchitecture.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("GPU Video Mode Description = %s"), *FString(GPUInfo.VideoModeDescription.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("GPU Video Processor = %s"), *FString(GPUInfo.VideoProcessor.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("GPU Video Memory Type = %s"), *FString(GPUInfo.VideoMemoryType.c_str()));
 	}
 
 	FOSInfoCollector OSInfoCollector;
