@@ -1,13 +1,13 @@
 #include "SystemCommand.h"
 
-FSystemCommand::FSystemCommand(const char* command /* = "" */)
+FSystemCommand::FSystemCommand(const char* command)
 {
 	FILE* fp = _popen(command, "r");
 	std::string path(256u, NULL);
 
 	if (!fp)
 	{
-		UE_LOG(LogTemp, Log, TEXT("ERROR: Failed to execute command \"%s\""), *FString(command));
+		UE_LOG(LogTemp, Log, TEXT("ERROR: Failed to execute system command: \"%s\""), *FString(command));
 		bFailed = true;
 		return;
 	}

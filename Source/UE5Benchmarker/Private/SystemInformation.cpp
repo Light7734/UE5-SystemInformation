@@ -10,12 +10,17 @@
 #include "InfoCPU.h"
 #include "InfoGPU.h"
 
-// Sets default values
 ASystemInformation::ASystemInformation()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	LogMotherboardInfo();
+	LogOSInfo();
+	LogCPUsInfo();
+	LogGPUsInfo();
+	LogRAMsInfo();
+}
 
+void ASystemInformation::LogMotherboardInfo()
+{
 	FMotherboardInfoCollector motherboardInfoCollector;
 	for (const auto& motherboardInfo : motherboardInfoCollector.GetMotherboardsInformation())
 	{
@@ -26,7 +31,10 @@ ASystemInformation::ASystemInformation()
 		UE_LOG(LogTemp, Log, TEXT("Motherboard Serial Number = %s"), *FString(motherboardInfo.SerialNumber.c_str()));
 		UE_LOG(LogTemp, Log, TEXT("Motherboard Version = %s"), *FString(motherboardInfo.Version.c_str()));
 	}
+}
 
+void ASystemInformation::LogOSInfo()
+{
 	FOSInfoCollector OSInfoCollector;
 	for (const auto& OSInfo : OSInfoCollector.GetOSInformation())
 	{
@@ -46,21 +54,10 @@ ASystemInformation::ASystemInformation()
 		UE_LOG(LogTemp, Log, TEXT("OS Free Physical Memory = %s"), *FString(OSInfo.FreePhysicalMemory.c_str()));
 		UE_LOG(LogTemp, Log, TEXT("OS Free Virtual Memory = %s"), *FString(OSInfo.FreeVirtualMemory.c_str()));
 	}
+}
 
-	FRAMInformationCollector RAMInformationCollector;
-	for (const auto& RAMInformation : RAMInformationCollector.GetRAMsInformation())
-	{
-		UE_LOG(LogTemp, Log, TEXT("Information for RAM stick #%i"), RAMInformation.Index);
-		UE_LOG(LogTemp, Log, TEXT("RAM Name = %s"), *FString(RAMInformation.Name.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("RAM Manufacturer = %s"), *FString(RAMInformation.Manufacturer.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("RAM Capacity = %s"), *FString(RAMInformation.Capacity.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("RAM Serial Number = %s"), *FString(RAMInformation.SerialNumber.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("RAM Form Factor = %s"), *FString(RAMInformation.FormFactor.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("RAM Part Number = %s"), *FString(RAMInformation.PartNumber.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("RAM Memory Type = %s"), *FString(RAMInformation.MemoryType.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("RAM Clock Speed = %s"), *FString(RAMInformation.ClockSpeed.c_str()));
-	}
-
+void ASystemInformation::LogCPUsInfo()
+{
 	FCPUInfoCollector cpuInfoCollector;
 	for (const auto& cpuInfo : cpuInfoCollector.GetCPUsInformation())
 	{
@@ -76,7 +73,10 @@ ASystemInformation::ASystemInformation()
 		// UE_LOG(LogTemp, Log, TEXT("Current CPU Clock Speed = %s"), *FString(cpuInfo.c.c_str()));
 		// UE_LOG(LogTemp, Log, TEXT("Current CPU Temperature = %s"), *FString(cpuInfo.tem.c_str()));
 	}
+}
 
+void ASystemInformation::LogGPUsInfo()
+{
 	FGPUInfoCollector GPUInfoCollector;
 	for (const auto& GPUInfo : GPUInfoCollector.GetGPUsInformation())
 	{
@@ -94,8 +94,19 @@ ASystemInformation::ASystemInformation()
 	}
 }
 
-// Called when the game starts or when spawned
-void ASystemInformation::BeginPlay()
+void ASystemInformation::LogRAMsInfo()
 {
-	Super::BeginPlay();
+	FRAMInformationCollector RAMInformationCollector;
+	for (const auto& RAMInformation : RAMInformationCollector.GetRAMsInformation())
+	{
+		UE_LOG(LogTemp, Log, TEXT("Information for RAM stick #%i"), RAMInformation.Index);
+		UE_LOG(LogTemp, Log, TEXT("RAM Name = %s"), *FString(RAMInformation.Name.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM Manufacturer = %s"), *FString(RAMInformation.Manufacturer.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM Capacity = %s"), *FString(RAMInformation.Capacity.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM Serial Number = %s"), *FString(RAMInformation.SerialNumber.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM Form Factor = %s"), *FString(RAMInformation.FormFactor.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM Part Number = %s"), *FString(RAMInformation.PartNumber.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM Memory Type = %s"), *FString(RAMInformation.MemoryType.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM Clock Speed = %s"), *FString(RAMInformation.ClockSpeed.c_str()));
+	}
 }

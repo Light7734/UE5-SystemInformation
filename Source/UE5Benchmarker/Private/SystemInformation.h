@@ -4,12 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+#include "InfoMotherboard.h"
+#include "InfoOS.h"
+#include "InfoCPU.h"
+#include "InfoGPU.h"
+#include "InfoRAM.h"
+// #include "InfoDisks.h"
+
 #include "SystemInformation.generated.h"
-
-struct FCPUInformation
-{
-
-};
 
 UCLASS()
 class ASystemInformation : public AActor
@@ -17,15 +20,12 @@ class ASystemInformation : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	ASystemInformation();
 
-	void FetchCPUInformation();
+	void LogMotherboardInfo();
+	void LogOSInfo();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-private:
-	FCPUInformation CPUInformation;
+	void LogCPUsInfo();
+	void LogGPUsInfo();
+	void LogRAMsInfo();
 };

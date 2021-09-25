@@ -9,7 +9,7 @@
 class FSystemCommand
 {
 public:
-    FSystemCommand(const char* command = "");
+    FSystemCommand(const char* command);
     
     inline const std::vector<std::string>& GetResult() const { return Result; }
     inline bool HasFailed() const { return bFailed; }
