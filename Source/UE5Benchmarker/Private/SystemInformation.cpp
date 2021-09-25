@@ -96,17 +96,25 @@ void ASystemInformation::LogGPUsInfo()
 
 void ASystemInformation::LogRAMsInfo()
 {
-	FRAMInformationCollector RAMInformationCollector;
-	for (const auto& RAMInformation : RAMInformationCollector.GetRAMsInformation())
+	for (const auto& RAMInformation : HardwareInfo::FRAM::FetchInfo())
 	{
 		UE_LOG(LogTemp, Log, TEXT("Information for RAM stick #%i"), RAMInformation.Index);
-		UE_LOG(LogTemp, Log, TEXT("RAM Name = %s"), *FString(RAMInformation.Name.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("RAM Manufacturer = %s"), *FString(RAMInformation.Manufacturer.c_str()));
 		UE_LOG(LogTemp, Log, TEXT("RAM Capacity = %s"), *FString(RAMInformation.Capacity.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("RAM Serial Number = %s"), *FString(RAMInformation.SerialNumber.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("RAM Form Factor = %s"), *FString(RAMInformation.FormFactor.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("RAM Part Number = %s"), *FString(RAMInformation.PartNumber.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("RAM Memory Type = %s"), *FString(RAMInformation.MemoryType.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("RAM Clock Speed = %s"), *FString(RAMInformation.ClockSpeed.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM ConfiguredClockSpeed = %s"), *FString(RAMInformation.ConfiguredClockSpeed.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM ConfiguredVoltage = %s"), *FString(RAMInformation.ConfiguredVoltage.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM DataWidth = %s"), *FString(RAMInformation.DataWidth.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM DeviceLocator = %s"), *FString(RAMInformation.DeviceLocator.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM FormFactor = %s"), *FString(RAMInformation.FormFactor.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM InterleaveDataDepth = %s"), *FString(RAMInformation.InterleaveDataDepth.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM InterleavePosition = %s"), *FString(RAMInformation.InterleavePosition.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM Manufacturer = %s"), *FString(RAMInformation.Manufacturer.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM MaxVoltage = %s"), *FString(RAMInformation.MaxVoltage.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM MinVoltage = %s"), *FString(RAMInformation.MinVoltage.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM PartNumber = %s"), *FString(RAMInformation.PartNumber.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM SMBIOSMemoryType = %s"), *FString(RAMInformation.SMBIOSMemoryType.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM Speed = %s"), *FString(RAMInformation.Speed.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM Tag = %s"), *FString(RAMInformation.Tag.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM TotalWidth = %s"), *FString(RAMInformation.TotalWidth.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("RAM TypeDetail = %s"), *FString(RAMInformation.TypeDetail.c_str()));
 	}
 }

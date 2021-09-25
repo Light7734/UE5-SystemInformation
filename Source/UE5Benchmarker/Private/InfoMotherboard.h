@@ -7,11 +7,11 @@
 class FMotherboardInfo
 {
 public:
-	std::string Name = UNDETECTED_INFO_STR;
-	std::string Manufacturer = UNDETECTED_INFO_STR;
-	std::string Chipset = UNDETECTED_INFO_STR;
-	std::string SerialNumber = UNDETECTED_INFO_STR;
-	std::string Version = UNDETECTED_INFO_STR;
+	std::string Name = INFO_STR_UNKNOWN;
+	std::string Manufacturer = INFO_STR_UNKNOWN;
+	std::string Chipset = INFO_STR_UNKNOWN;
+	std::string SerialNumber = INFO_STR_UNKNOWN;
+	std::string Version = INFO_STR_UNKNOWN;
 
 	uint8_t Index = 0u;
 };

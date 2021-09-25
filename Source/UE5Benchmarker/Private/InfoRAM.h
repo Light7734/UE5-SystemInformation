@@ -4,32 +4,42 @@
 
 #include <vector>
 
-struct FRAMInformation
-{
-	std::string Name = UNDETECTED_INFO_STR;
-	std::string Manufacturer = UNDETECTED_INFO_STR;
-	std::string Capacity = UNDETECTED_INFO_STR;
-	std::string SerialNumber = UNDETECTED_INFO_STR;
-	std::string FormFactor = UNDETECTED_INFO_STR;
-	std::string PartNumber = UNDETECTED_INFO_STR;
-	std::string MemoryType = UNDETECTED_INFO_STR;
-	std::string ClockSpeed = UNDETECTED_INFO_STR;
+namespace HardwareInfo {
 
-	uint8_t Index = 0u;
-};
+	class FRAM
+	{
+	public:
+		struct Info
+		{
+			std::string Capacity = INFO_STR_UNKNOWN;
+			std::string ConfiguredClockSpeed = INFO_STR_UNKNOWN;
+			std::string ConfiguredVoltage = INFO_STR_UNKNOWN;
+			std::string DataWidth = INFO_STR_UNKNOWN;
+			std::string DeviceLocator = INFO_STR_UNKNOWN;
+			std::string FormFactor = INFO_STR_UNKNOWN;
+			std::string InterleaveDataDepth = INFO_STR_UNKNOWN;
+			std::string InterleavePosition = INFO_STR_UNKNOWN;
+			std::string Manufacturer = INFO_STR_UNKNOWN;
+			std::string MaxVoltage = INFO_STR_UNKNOWN;
+			std::string MinVoltage = INFO_STR_UNKNOWN;
+			std::string PartNumber = INFO_STR_UNKNOWN;
+			std::string SMBIOSMemoryType = INFO_STR_UNKNOWN;
+			std::string Speed = INFO_STR_UNKNOWN;
+			std::string Tag = INFO_STR_UNKNOWN;
+			std::string TotalWidth = INFO_STR_UNKNOWN;
+			std::string TypeDetail = INFO_STR_UNKNOWN;
 
-class FRAMInformationCollector
-{
-public:
-	FRAMInformationCollector();
+			uint8_t Index = 0u;
+		};
 
-	inline const std::vector<FRAMInformation>& GetRAMsInformation() const { return RAMsInformation; }
-	inline int GetRAMCount() const { return RAMCount; }
+	public:
+		static std::vector<Info> FetchInfo();
 
-private:
-	std::string DetermineMemoryType(const std::string& formFactorString) const;
-	std::string DetermineFormFactor(const std::string& formFactorString) const;
+	private:
+		static void FetchField(const std::string& iter, const char* fieldName, std::string& outValue);
 
-	std::vector<FRAMInformation> RAMsInformation;
-	uint8_t RAMCount;
-};
+		static std::string DetermineMemoryType(const std::string& memoryTypeString);
+		static std::string DetermineFormFactor(const std::string& formFactorString);
+	};
+
+}

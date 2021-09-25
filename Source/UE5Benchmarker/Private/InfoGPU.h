@@ -6,16 +6,16 @@
 
 struct FGPUInfo
 {
-    std::string Name = UNDETECTED_INFO_STR;
-    std::string Manufacturer = UNDETECTED_INFO_STR;
-    std::string Caption = UNDETECTED_INFO_STR;
-    std::string AdapterRAM = UNDETECTED_INFO_STR;
-    std::string RefreshRate = UNDETECTED_INFO_STR;
-    std::string DriverVersion = UNDETECTED_INFO_STR;
-    std::string VideoArchitecture = UNDETECTED_INFO_STR;
-    std::string VideoMemoryType = UNDETECTED_INFO_STR;
-    std::string VideoModeDescription = UNDETECTED_INFO_STR;
-    std::string VideoProcessor = UNDETECTED_INFO_STR;
+    std::string Name = INFO_STR_UNKNOWN;
+    std::string Manufacturer = INFO_STR_UNKNOWN;
+    std::string Caption = INFO_STR_UNKNOWN;
+    std::string AdapterRAM = INFO_STR_UNKNOWN;
+    std::string RefreshRate = INFO_STR_UNKNOWN;
+    std::string DriverVersion = INFO_STR_UNKNOWN;
+    std::string VideoArchitecture = INFO_STR_UNKNOWN;
+    std::string VideoMemoryType = INFO_STR_UNKNOWN;
+    std::string VideoModeDescription = INFO_STR_UNKNOWN;
+    std::string VideoProcessor = INFO_STR_UNKNOWN;
 	int Index;
 };
 

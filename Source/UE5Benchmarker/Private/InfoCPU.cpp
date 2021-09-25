@@ -104,7 +104,7 @@ const char* FCPUInfoCollector::FetchTemperature() const
 	// #todo: I have no idea what's this
 	// 
 	// NOTE: THIS IS NOT SUPPORTED BY ALL COMPUTERS !!!
-	const char* temperature = UNDETECTED_INFO_STR;
+	const char* temperature = INFO_STR_UNKNOWN;
 	FSystemCommand temperatureQuery{ TEMPERATURE_QUERY_STRING };
 
 	if (temperatureQuery.HasFailed())

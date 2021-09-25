@@ -6,22 +6,22 @@
 
 struct FOSInformation
 {
-    std::string Name = UNDETECTED_INFO_STR;
-    std::string Manufacturer = UNDETECTED_INFO_STR;
-	std::string Architecture = UNDETECTED_INFO_STR;
-	std::string Caption = UNDETECTED_INFO_STR;
-	std::string Version = UNDETECTED_INFO_STR;
-	std::string CurrentUser = UNDETECTED_INFO_STR;
-	std::string InstallDate = UNDETECTED_INFO_STR;
-	std::string BuildNumber = UNDETECTED_INFO_STR;
-	std::string LastBootUpTime = UNDETECTED_INFO_STR;
-	std::string BootDevice = UNDETECTED_INFO_STR;
-	std::string SerialNumber = UNDETECTED_INFO_STR;
-	std::string TotalVirtualMemory = UNDETECTED_INFO_STR;
-	std::string TotalVisibleMemory = UNDETECTED_INFO_STR;
-	std::string TotalSwapSize = UNDETECTED_INFO_STR;
-	std::string FreePhysicalMemory = UNDETECTED_INFO_STR;
-	std::string FreeVirtualMemory = UNDETECTED_INFO_STR;
+    std::string Name = INFO_STR_UNKNOWN;
+    std::string Manufacturer = INFO_STR_UNKNOWN;
+	std::string Architecture = INFO_STR_UNKNOWN;
+	std::string Caption = INFO_STR_UNKNOWN;
+	std::string Version = INFO_STR_UNKNOWN;
+	std::string CurrentUser = INFO_STR_UNKNOWN;
+	std::string InstallDate = INFO_STR_UNKNOWN;
+	std::string BuildNumber = INFO_STR_UNKNOWN;
+	std::string LastBootUpTime = INFO_STR_UNKNOWN;
+	std::string BootDevice = INFO_STR_UNKNOWN;
+	std::string SerialNumber = INFO_STR_UNKNOWN;
+	std::string TotalVirtualMemory = INFO_STR_UNKNOWN;
+	std::string TotalVisibleMemory = INFO_STR_UNKNOWN;
+	std::string TotalSwapSize = INFO_STR_UNKNOWN;
+	std::string FreePhysicalMemory = INFO_STR_UNKNOWN;
+	std::string FreeVirtualMemory = INFO_STR_UNKNOWN;
 
 	int Index;
 };

@@ -1,140 +1,83 @@
 #include "InfoRAM.h"
 #include "systemcommand.h"
 
-#define NAME_IDENTIFIER_STRING "DeviceLocator="
-#define MANUFACTURER_IDENTIFIER_STRING "Manufacturer="
-#define CAPACITY_IDENTIFIER_STRING "Capacity="
-#define SERIAL_NUMBER_IDENTIFIER_STRING "SerialNumber="
-#define FORM_FACTOR_IDENTIFIER_STRING "FormFactor="
-#define PART_NUMBER_IDENTIFIER_STRING "PartNumber="
-#define MEMORY_TYPE_IDENTIFIER_STRING "MemoryType="
-#define CLOCK_SPEED_IDENTIFIER_STRING "ConfiguredClockSpeed="
-#define BACKUP_CLOCK_SPEED_IDENTIFIER_STRING "Speed="
-#define BYTES_PER_MEGABYTE 1000000 // #todo: check this
-#define RAM_INFO_QUERY_STRING "wmic memorychip get /format: list"
-#define RAM_INSTANCE_IDENTIFIER_STRING "ConfiguredClockSpeed="
-#define RAM_INFO_END_IDENTIFIER_STRING "Version="
+namespace HardwareInfo {
 
-FRAMInformationCollector::FRAMInformationCollector()
-	: RAMCount(0u)
-{
-	FSystemCommand RAMsQuery(RAM_INFO_QUERY_STRING);
-	if (RAMsQuery.HasFailed())
+	std::vector<FRAM::Info> FRAM::FetchInfo()
 	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to query RAMs"));
-		return;
-	}
-
-	// fetch ram-count
-	for (auto iter = RAMsQuery.GetResult().begin(); iter != RAMsQuery.GetResult().end(); iter++)
-		if (iter->find(RAM_INSTANCE_IDENTIFIER_STRING) != std::string::npos)
-			RAMCount++;
-
-	for (uint8_t i = 0u; i < RAMCount; i++)
-	{
-		FRAMInformation RAMInfo;
-		RAMInfo.Index = i + 1;
-
-		std::string backupClockSpeed = "";
-
-		for (auto iter = RAMsQuery.GetResult().begin(); iter->find(RAM_INFO_END_IDENTIFIER_STRING) == std::string::npos; iter++)
+		// query rams
+		FSystemCommand RAMsQuery("wmic path Win32_PhysicalMemory get /format: list");
+		if (RAMsQuery.HasFailed())
 		{
-			// name
-			if (FIND_IN_ITER(NAME_IDENTIFIER_STRING))
-				RAMInfo.Name = iter->substr(iter->find(NAME_IDENTIFIER_STRING) + std::strlen(NAME_IDENTIFIER_STRING));
-
-			// manufacturer
-			if (FIND_IN_ITER(MANUFACTURER_IDENTIFIER_STRING))
-				RAMInfo.Manufacturer = iter->substr(iter->find(MANUFACTURER_IDENTIFIER_STRING) + std::strlen(MANUFACTURER_IDENTIFIER_STRING));
-
-			// capacity
-			if (FIND_IN_ITER(CAPACITY_IDENTIFIER_STRING))
-			{
-				size_t foundPosition = iter->find(CAPACITY_IDENTIFIER_STRING);
-				std::string capacityString = iter->substr(foundPosition + std::strlen(CAPACITY_IDENTIFIER_STRING));
-				if (capacityString == "")
-				{
-					RAMInfo.Capacity = "";
-					continue;
-				}
-				else
-				{
-					uint64_t capacity = 0u;
-					try
-					{
-						capacity = std::stoll(capacityString);
-						RAMInfo.Capacity = std::to_string(capacity / BYTES_PER_MEGABYTE) + "MB (" + std::to_string(capacity) + " Bytes)";
-					}
-					catch (std::exception& e)
-					{
-						(void)e;
-						RAMInfo.Capacity = capacityString + " Bytes";
-					}
-				}
-			}
-
-			// serial number
-			if (FIND_IN_ITER(SERIAL_NUMBER_IDENTIFIER_STRING))
-				RAMInfo.SerialNumber = iter->substr(iter->find(SERIAL_NUMBER_IDENTIFIER_STRING) + std::strlen(SERIAL_NUMBER_IDENTIFIER_STRING));
-
-			// form factor (SODIMM, DIMM, etc)
-			if (FIND_IN_ITER(FORM_FACTOR_IDENTIFIER_STRING))
-			{
-				std::string formFactorString = iter->substr(iter->find(FORM_FACTOR_IDENTIFIER_STRING) + std::strlen(FORM_FACTOR_IDENTIFIER_STRING));
-				RAMInfo.FormFactor = DetermineFormFactor(formFactorString); // #todo:
-			}
-
-			// part number
-			if (FIND_IN_ITER(PART_NUMBER_IDENTIFIER_STRING))
-				RAMInfo.PartNumber = iter->substr(iter->find(PART_NUMBER_IDENTIFIER_STRING) + std::strlen(PART_NUMBER_IDENTIFIER_STRING));
-
-			// memory type (DRAM, SDRAM, etc)
-			if (FIND_IN_ITER(MEMORY_TYPE_IDENTIFIER_STRING))
-			{
-				std::string memoryTypeString = iter->substr(iter->find(MEMORY_TYPE_IDENTIFIER_STRING) + std::strlen(MEMORY_TYPE_IDENTIFIER_STRING));
-				RAMInfo.MemoryType = DetermineMemoryType(memoryTypeString);
-			}
-
-			// clock speed
-			if (FIND_IN_ITER(CLOCK_SPEED_IDENTIFIER_STRING))
-			{
-				RAMInfo.ClockSpeed = iter->substr(iter->find(CLOCK_SPEED_IDENTIFIER_STRING) + std::strlen(CLOCK_SPEED_IDENTIFIER_STRING)) + "MHz";
-
-				if (RAMInfo.ClockSpeed == "MHz")
-					RAMInfo.ClockSpeed = UNDETECTED_INFO_STR;
-			}
-
-			// backup clock speed
-			if (FIND_IN_ITER(BACKUP_CLOCK_SPEED_IDENTIFIER_STRING))
-			{
-				backupClockSpeed = iter->substr(iter->find(BACKUP_CLOCK_SPEED_IDENTIFIER_STRING) + std::strlen(BACKUP_CLOCK_SPEED_IDENTIFIER_STRING)) + "MHz";
-
-				if (backupClockSpeed == "MHz")
-					backupClockSpeed = UNDETECTED_INFO_STR;
-			}
+			UE_LOG(LogTemp, Error, TEXT("Failed to query RAMs"));
+			return {};
 		}
 
-		if (RAMInfo.ClockSpeed == UNDETECTED_INFO_STR)
-			RAMInfo.ClockSpeed = backupClockSpeed;
+		// fetch rams-count
+		uint8_t count = 0u;
+		for (auto iter = RAMsQuery.GetResult().begin(); iter != RAMsQuery.GetResult().end(); iter++)
+			if (iter->find("Version=") != std::string::npos)
+				count++;
 
-		RAMsInformation.push_back(RAMInfo);
-	}
-}
-std::string FRAMInformationCollector::DetermineMemoryType(const std::string& memoryTypeString) const
-{
-	int memoryType = 0;
-	try {
-		memoryType = std::stoi(memoryTypeString);
-	}
-	catch (std::exception& e) {
-		(void)e;
-		memoryType = 0;
+		// fetch rams-info
+		std::vector<Info> ramsInfo;
+		for (uint8_t i = 0u; i < count; i++)
+		{
+			Info ramInfo;
+			ramInfo.Index = i + 1;
+
+			std::string backupClockSpeed = "";
+
+			for (auto iter = RAMsQuery.GetResult().begin(); iter->find("Version=") == std::string::npos; iter++)
+			{
+				FetchField(*iter, "Capacity=", ramInfo.Capacity);
+				FetchField(*iter, "ConfiguredClockSpeed=", ramInfo.ConfiguredClockSpeed);
+				FetchField(*iter, "ConfiguredVoltage=", ramInfo.ConfiguredVoltage);
+				FetchField(*iter, "DataWidth=", ramInfo.DataWidth);
+				FetchField(*iter, "DeviceLocator=", ramInfo.DeviceLocator);
+				FetchField(*iter, "FormFactor=", ramInfo.FormFactor);
+				FetchField(*iter, "InterleaveDataDepth=", ramInfo.InterleaveDataDepth);
+				FetchField(*iter, "InterleavePosition=", ramInfo.InterleavePosition);
+				FetchField(*iter, "Manufacturer=", ramInfo.Manufacturer);
+				FetchField(*iter, "MaxVoltage=", ramInfo.MaxVoltage);
+				FetchField(*iter, "MinVoltage=", ramInfo.MinVoltage);
+				FetchField(*iter, "PartNumber=", ramInfo.PartNumber);
+				FetchField(*iter, "SMBIOSMemoryType=", ramInfo.SMBIOSMemoryType);
+				FetchField(*iter, "Speed=", ramInfo.Speed);
+				FetchField(*iter, "Tag=", ramInfo.Tag);
+				FetchField(*iter, "TotalWidth=", ramInfo.TotalWidth);
+				FetchField(*iter, "TypeDetail=", ramInfo.TypeDetail);
+			}
+
+			ramsInfo.push_back(ramInfo);
+		}
+
+		return ramsInfo;
 	}
 
-	// https://msdn.microsoft.com/en-us/library/aa394347(v=vs.85).aspx
-	switch (memoryType)
+	void FRAM::FetchField(const std::string& iter, const char* fieldName, std::string& outValue)
 	{
-		case 0: return UNDETECTED_INFO_STR;
+		if (outValue != INFO_STR_UNKNOWN)
+			return;
+
+		outValue = iter.find(fieldName) != std::string::npos ? iter.substr(iter.find(fieldName) + std::strlen(fieldName)) : INFO_STR_UNKNOWN;
+	}
+
+	std::string FRAM::DetermineMemoryType(const std::string& memoryTypeString)
+	{
+		int memoryType = 0;
+		try {
+			memoryType = std::stoi(memoryTypeString);
+		}
+		catch (std::exception& e) {
+			(void)e;
+			memoryType = 0;
+		}
+
+		// https://msdn.microsoft.com/en-us/library/aa394347(v=vs.85).aspx
+		switch (memoryType)
+		{
+		case 0: return INFO_STR_UNKNOWN;
 		case 1: return "Other";
 		case 2: return "DRAM";
 		case 3: return "Synchronous DRAM";
@@ -161,25 +104,25 @@ std::string FRAMInformationCollector::DetermineMemoryType(const std::string& mem
 		case 24: return "DDR3";
 		case 25: return "FBD2";
 		default: return UNKNOWN_INFO_STR;
-	}
-}
-
-std::string FRAMInformationCollector::DetermineFormFactor(const std::string &formFactorString) const
-{
-	int formFactor = 0;
-	try 
-	{
-		formFactor = std::stoi(formFactorString);
-	} 
-	catch (std::exception &e)
-	{
-		(void)e;
-		formFactor = 0;
+		}
 	}
 
-    // https://msdn.microsoft.com/en-us/library/aa394347(v=vs.85).aspx
-	switch (formFactor) {
-		case 0: return UNDETECTED_INFO_STR;
+	std::string FRAM::DetermineFormFactor(const std::string& formFactorString)
+	{
+		int formFactor = 0;
+		try
+		{
+			formFactor = std::stoi(formFactorString);
+		}
+		catch (std::exception& e)
+		{
+			(void)e;
+			formFactor = 0;
+		}
+
+		// https://msdn.microsoft.com/en-us/library/aa394347(v=vs.85).aspx
+		switch (formFactor) {
+		case 0: return INFO_STR_UNKNOWN;
 		case 1: return "Other";
 		case 2: return "SIP";
 		case 3: return "DIP";
@@ -204,5 +147,7 @@ std::string FRAMInformationCollector::DetermineFormFactor(const std::string &for
 		case 22: return "FPBGA";
 		case 23: return "LGA";
 		default: return UNKNOWN_INFO_STR;
+		}
 	}
+
 }

@@ -133,7 +133,7 @@ const char* FGPUInfoCollector::DetermineVideoArchitecture(const std::string vide
         case 11: return "XGA";
         case 12: return "Linear Frame Buffer";
         case 160: return "PC - 98";
-        default: return UNDETECTED_INFO_STR;
+        default: return INFO_STR_UNKNOWN;
     }
 }
 
@@ -164,6 +164,6 @@ const char* FGPUInfoCollector::DetermineVideoMemoryType(const std::string& video
         case 11: return "3DRAM";
         case 12: return "SDRAM";
         case 13: return "SGRAM";
-        default: return UNDETECTED_INFO_STR;
+        default: return INFO_STR_UNKNOWN;
     }
 }
