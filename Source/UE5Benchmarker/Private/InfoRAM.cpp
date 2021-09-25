@@ -206,8 +206,3 @@ std::string FRAMInformationCollector::DetermineFormFactor(const std::string &for
 		default: return UNKNOWN_INFO_STR;
 	}
 }
-
-void FRAMInformationCollector::FetchNumberOfRams(const std::vector<std::string>& data)
-{
-
-}

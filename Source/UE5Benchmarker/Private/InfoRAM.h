@@ -32,6 +32,4 @@ private:
 
 	std::vector<FRAMInformation> RAMsInformation;
 	uint8_t RAMCount;
-
-	void FetchNumberOfRams(const std::vector<std::string>& data);
 };
