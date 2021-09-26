@@ -4,37 +4,82 @@
 
 #include <vector>
 
-struct FOSInformation
-{
-    std::string Name = INFO_STR_UNKNOWN;
-    std::string Manufacturer = INFO_STR_UNKNOWN;
-	std::string Architecture = INFO_STR_UNKNOWN;
-	std::string Caption = INFO_STR_UNKNOWN;
-	std::string Version = INFO_STR_UNKNOWN;
-	std::string CurrentUser = INFO_STR_UNKNOWN;
-	std::string InstallDate = INFO_STR_UNKNOWN;
-	std::string BuildNumber = INFO_STR_UNKNOWN;
-	std::string LastBootUpTime = INFO_STR_UNKNOWN;
-	std::string BootDevice = INFO_STR_UNKNOWN;
-	std::string SerialNumber = INFO_STR_UNKNOWN;
-	std::string TotalVirtualMemory = INFO_STR_UNKNOWN;
-	std::string TotalVisibleMemory = INFO_STR_UNKNOWN;
-	std::string TotalSwapSize = INFO_STR_UNKNOWN;
-	std::string FreePhysicalMemory = INFO_STR_UNKNOWN;
-	std::string FreeVirtualMemory = INFO_STR_UNKNOWN;
+namespace HardwareInfo {
 
-	int Index;
-};
+	class FOS
+	{
+	public:
+		struct Info
+		{
+			std::string BuildNumber = INFO_STR_UNKNOWN;
+			std::string BuildType = INFO_STR_UNKNOWN;
+			std::string Caption = INFO_STR_UNKNOWN;
+			std::string DataExecutionPrevention_32BitApplications = INFO_STR_UNKNOWN;
+			std::string DataExecutionPrevention_Available = INFO_STR_UNKNOWN;
+			std::string DataExecutionPrevention_Drivers = INFO_STR_UNKNOWN;
+			std::string DataExecutionPrevention_SupportPolicy = INFO_STR_UNKNOWN;
+			std::string Distributed = INFO_STR_UNKNOWN;
+			std::string ForegroundApplicationBoost = INFO_STR_UNKNOWN;
+			std::string FreePhysicalMemory = INFO_STR_UNKNOWN;
+			std::string FreeSpaceInPagingFiles = INFO_STR_UNKNOWN;
+			std::string FreeVirtualMemory = INFO_STR_UNKNOWN;
+			std::string Manufacturer = INFO_STR_UNKNOWN;
+			std::string MaxNumberOfProcesses = INFO_STR_UNKNOWN;
+			std::string MaxProcessMemorySize = INFO_STR_UNKNOWN;
+			std::string OperatingSystemSKU = INFO_STR_UNKNOWN;
+			std::string OSArchitecture = INFO_STR_UNKNOWN;
+			std::string OSProductSuite = INFO_STR_UNKNOWN;
+			std::string OSType = INFO_STR_UNKNOWN;
+			std::string PortableOperatingSystem = INFO_STR_UNKNOWN;
+			std::string Primary = INFO_STR_UNKNOWN;
+			std::string ProductType = INFO_STR_UNKNOWN;
+			std::string SizeStoredInPagingFiles = INFO_STR_UNKNOWN;
+			std::string Status = INFO_STR_UNKNOWN;
+			std::string SuiteMask = INFO_STR_UNKNOWN;
+			std::string TotalVirtualMemorySize = INFO_STR_UNKNOWN;
+			std::string TotalVisibleMemorySize = INFO_STR_UNKNOWN;
+			std::string Version = INFO_STR_UNKNOWN;
 
-class FOSInfoCollector
-{
-public:
-	FOSInfoCollector();
+			uint32_t Index;
 
-	inline const std::vector<FOSInformation>& GetOSInformation() const { return OSsInformation; }
-	inline uint8_t GetOSCount() const { return OSCount; }
+			void LogToUE_LOG() const
+			{
+				UE_LOG(LogTemp, Log, TEXT("OS #%i {"), Index);
+				UE_LOG(LogTemp, Log, TEXT("    BuildNumber = %s"), *FString(BuildNumber.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    BuildType = %s"), *FString(BuildType.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    DataExecutionPrevention_32BitApplications = %s"), *FString(DataExecutionPrevention_32BitApplications.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    DataExecutionPrevention_Available = %s"), *FString(DataExecutionPrevention_Available.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    DataExecutionPrevention_Drivers = %s"), *FString(DataExecutionPrevention_Drivers.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    DataExecutionPrevention_SupportPolicy = %s"), *FString(DataExecutionPrevention_SupportPolicy.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    Distributed = %s"), *FString(Distributed.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    ForegroundApplicationBoost = %s"), *FString(ForegroundApplicationBoost.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    FreePhysicalMemory = %s"), *FString(FreePhysicalMemory.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    FreeSpaceInPagingFiles = %s"), *FString(FreeSpaceInPagingFiles.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    FreeVirtualMemory = %s"), *FString(FreeVirtualMemory.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    Manufacturer = %s"), *FString(Manufacturer.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    MaxNumberOfProcesses = %s"), *FString(MaxNumberOfProcesses.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    MaxProcessMemorySize = %s"), *FString(MaxProcessMemorySize.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    OperatingSystemSKU = %s"), *FString(OperatingSystemSKU.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    OSArchitecture = %s"), *FString(OSArchitecture.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    OSProductSuite = %s"), *FString(OSProductSuite.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    OSType = %s"), *FString(OSType.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    PortableOperatingSystem = %s"), *FString(PortableOperatingSystem.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    Primary = %s"), *FString(Primary.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    ProductType = %s"), *FString(ProductType.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    Status = %s"), *FString(Status.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    SuiteMask = %s"), *FString(SuiteMask.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    TotalVirtualMemorySize = %s"), *FString(TotalVirtualMemorySize.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    TotalVisibleMemorySize = %s"), *FString(TotalVisibleMemorySize.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    Version = %s"), *FString(Version.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("}"), *FString(Version.c_str()));
+			}
+		};
 
-private:
-	std::vector<FOSInformation> OSsInformation;
-	uint8_t OSCount;
-};
+	public:
+		static std::vector<Info> FetchInfo();
+
+	private:
+		static void TryFetchField(const std::string& iter, const char* fieldName, std::string& outValue);
+	};
+
+}

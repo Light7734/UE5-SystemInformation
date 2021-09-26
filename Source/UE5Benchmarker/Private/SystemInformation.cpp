@@ -35,25 +35,8 @@ void ASystemInformation::LogMotherboardInfo()
 
 void ASystemInformation::LogOSInfo()
 {
-	FOSInfoCollector OSInfoCollector;
-	for (const auto& OSInfo : OSInfoCollector.GetOSInformation())
-	{
-		UE_LOG(LogTemp, Log, TEXT("OS Name = %s"), *FString(OSInfo.Name.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Manufacturer = %s"), *FString(OSInfo.Manufacturer.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Caption = %s"), *FString(OSInfo.Caption.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Version = %s"), *FString(OSInfo.Version.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Current User = %s"), *FString(OSInfo.CurrentUser.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Install Date = %s"), *FString(OSInfo.InstallDate.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Build Number = %s"), *FString(OSInfo.BuildNumber.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Last Boot Up Time = %s"), *FString(OSInfo.LastBootUpTime.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Boot Device = %s"), *FString(OSInfo.BootDevice.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Total Virtual Memory = %s"), *FString(OSInfo.TotalVirtualMemory.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Total Visible Memory = %s"), *FString(OSInfo.TotalVisibleMemory.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Total Swap Size = %s"), *FString(OSInfo.TotalSwapSize.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Serial Number = %s"), *FString(OSInfo.SerialNumber.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Free Physical Memory = %s"), *FString(OSInfo.FreePhysicalMemory.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("OS Free Virtual Memory = %s"), *FString(OSInfo.FreeVirtualMemory.c_str()));
-	}
+	for (const auto& osInfo : HardwareInfo::FOS::FetchInfo())
+		osInfo.LogToUE_LOG();
 }
 
 void ASystemInformation::LogCPUsInfo()
