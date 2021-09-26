@@ -13,54 +13,53 @@ namespace HardwareInfo {
 			return {};
 		}
 
-		// fetch rams-count
-		uint8_t count = 0u;
-		for (auto iter = RAMsQuery.GetResult().begin(); iter != RAMsQuery.GetResult().end(); iter++)
-			if (iter->find("Version=") != std::string::npos)
-				count++;
-
-		// fetch rams-info
+		// fetch rams info
 		std::vector<Info> ramsInfo;
-		for (uint8_t i = 0u; i < count; i++)
+		Info ramInfo;
+
+		uint32_t index = 1u;
+		for (auto it : RAMsQuery.GetResult())
 		{
-			Info ramInfo;
-			ramInfo.Index = i + 1;
+			TryFetchField(it, "Capacity=", ramInfo.Capacity);
+			TryFetchField(it, "ConfiguredClockSpeed=", ramInfo.ConfiguredClockSpeed);
+			TryFetchField(it, "ConfiguredVoltage=", ramInfo.ConfiguredVoltage);
+			TryFetchField(it, "DataWidth=", ramInfo.DataWidth);
+			TryFetchField(it, "DeviceLocator=", ramInfo.DeviceLocator);
+			TryFetchField(it, "FormFactor=", ramInfo.FormFactor);
+			TryFetchField(it, "InterleaveDataDepth=", ramInfo.InterleaveDataDepth);
+			TryFetchField(it, "InterleavePosition=", ramInfo.InterleavePosition);
+			TryFetchField(it, "Manufacturer=", ramInfo.Manufacturer);
+			TryFetchField(it, "MaxVoltage=", ramInfo.MaxVoltage);
+			TryFetchField(it, "MinVoltage=", ramInfo.MinVoltage);
+			TryFetchField(it, "PartNumber=", ramInfo.PartNumber);
+			TryFetchField(it, "SMBIOSMemoryType=", ramInfo.SMBIOSMemoryType);
+			TryFetchField(it, "Speed=", ramInfo.Speed);
+			TryFetchField(it, "Tag=", ramInfo.Tag);
+			TryFetchField(it, "TotalWidth=", ramInfo.TotalWidth);
+			TryFetchField(it, "TypeDetail=", ramInfo.TypeDetail);
 
-			std::string backupClockSpeed = "";
-
-			for (auto iter = RAMsQuery.GetResult().begin(); iter->find("Version=") == std::string::npos; iter++)
+			if (it.find("Version") == 0u)
 			{
-				FetchField(*iter, "Capacity=", ramInfo.Capacity);
-				FetchField(*iter, "ConfiguredClockSpeed=", ramInfo.ConfiguredClockSpeed);
-				FetchField(*iter, "ConfiguredVoltage=", ramInfo.ConfiguredVoltage);
-				FetchField(*iter, "DataWidth=", ramInfo.DataWidth);
-				FetchField(*iter, "DeviceLocator=", ramInfo.DeviceLocator);
-				FetchField(*iter, "FormFactor=", ramInfo.FormFactor);
-				FetchField(*iter, "InterleaveDataDepth=", ramInfo.InterleaveDataDepth);
-				FetchField(*iter, "InterleavePosition=", ramInfo.InterleavePosition);
-				FetchField(*iter, "Manufacturer=", ramInfo.Manufacturer);
-				FetchField(*iter, "MaxVoltage=", ramInfo.MaxVoltage);
-				FetchField(*iter, "MinVoltage=", ramInfo.MinVoltage);
-				FetchField(*iter, "PartNumber=", ramInfo.PartNumber);
-				FetchField(*iter, "SMBIOSMemoryType=", ramInfo.SMBIOSMemoryType);
-				FetchField(*iter, "Speed=", ramInfo.Speed);
-				FetchField(*iter, "Tag=", ramInfo.Tag);
-				FetchField(*iter, "TotalWidth=", ramInfo.TotalWidth);
-				FetchField(*iter, "TypeDetail=", ramInfo.TypeDetail);
-			}
+				ramInfo.Index = index++;
 
-			ramsInfo.push_back(ramInfo);
+				// store current ram info then reset it
+				ramsInfo.push_back(ramInfo);
+				ramInfo = Info();
+			}
 		}
 
 		return ramsInfo;
 	}
 
-	void FRAM::FetchField(const std::string& iter, const char* fieldName, std::string& outValue)
+	void FRAM::TryFetchField(const std::string& iter, const char* fieldName, std::string& outValue)
 	{
 		if (outValue != INFO_STR_UNKNOWN)
 			return;
 
 		outValue = iter.find(fieldName) != std::string::npos ? iter.substr(iter.find(fieldName) + std::strlen(fieldName)) : INFO_STR_UNKNOWN;
+
+		if (outValue == "")
+			outValue = INFO_STR_UNKNOWN;
 	}
 
 	std::string FRAM::DetermineMemoryType(const std::string& memoryTypeString)

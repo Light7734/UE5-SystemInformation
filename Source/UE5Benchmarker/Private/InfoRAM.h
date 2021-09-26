@@ -29,14 +29,38 @@ namespace HardwareInfo {
 			std::string TotalWidth = INFO_STR_UNKNOWN;
 			std::string TypeDetail = INFO_STR_UNKNOWN;
 
-			uint8_t Index = 0u;
+			uint32_t Index = 0u;
+
+			void LogToUE_LOG() const
+			{
+				UE_LOG(LogTemp, Log, TEXT("RAM #%i {"), Index);
+				UE_LOG(LogTemp, Log, TEXT("    Capacity = %s"), *FString(Capacity.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    ConfiguredClockSpeed = %s"), *FString(ConfiguredClockSpeed.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    ConfiguredVoltage = %s"), *FString(ConfiguredVoltage.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    DataWidth = %s"), *FString(DataWidth.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    DeviceLocator = %s"), *FString(DeviceLocator.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    FormFactor = %s"), *FString(FormFactor.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    InterleaveDataDepth = %s"), *FString(InterleaveDataDepth.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    InterleavePosition = %s"), *FString(InterleavePosition.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    Manufacturer = %s"), *FString(Manufacturer.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    MaxVoltage = %s"), *FString(MaxVoltage.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    MinVoltage = %s"), *FString(MinVoltage.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    PartNumber = %s"), *FString(PartNumber.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    MinVoltage = %s"), *FString(MinVoltage.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    SMBIOSMemoryType = %s"), *FString(SMBIOSMemoryType.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    Speed = %s"), *FString(Speed.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    Tag = %s"), *FString(Tag.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    TotalWidth = %s"), *FString(TotalWidth.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("    TypeDetail = %s"), *FString(TypeDetail.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("}"));
+			}
 		};
 
 	public:
 		static std::vector<Info> FetchInfo();
 
 	private:
-		static void FetchField(const std::string& iter, const char* fieldName, std::string& outValue);
+		static void TryFetchField(const std::string& iter, const char* fieldName, std::string& outValue);
 
 		static std::string DetermineMemoryType(const std::string& memoryTypeString);
 		static std::string DetermineFormFactor(const std::string& formFactorString);

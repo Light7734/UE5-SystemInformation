@@ -23,9 +23,7 @@ public:
 	ASystemInformation();
 
 	void LogMotherboardInfo();
-	void LogOSInfo();
 
 	void LogCPUsInfo();
 	void LogGPUsInfo();
-	void LogRAMsInfo();
 };
