@@ -71,7 +71,7 @@ namespace HardwareInfo {
 				UE_LOG(LogTemp, Log, TEXT("    TotalVirtualMemorySize = %s"), *FString(TotalVirtualMemorySize.c_str()));
 				UE_LOG(LogTemp, Log, TEXT("    TotalVisibleMemorySize = %s"), *FString(TotalVisibleMemorySize.c_str()));
 				UE_LOG(LogTemp, Log, TEXT("    Version = %s"), *FString(Version.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("}"), *FString(Version.c_str()));
+				UE_LOG(LogTemp, Log, TEXT("}"));
 			}
 		};
 
