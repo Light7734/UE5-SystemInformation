@@ -6,7 +6,7 @@
 
 namespace HardwareInfo {
 
-	class FOS
+	class FOperatingSystem
 	{
 	public:
 		struct Info
@@ -44,7 +44,7 @@ namespace HardwareInfo {
 
 			void LogToUE_LOG() const
 			{
-				UE_LOG(LogTemp, Log, TEXT("OS #%i {"), Index);
+				UE_LOG(LogTemp, Log, TEXT("Operating System #%i {"), Index);
 				UE_LOG(LogTemp, Log, TEXT("    BuildNumber = %s"), *FString(BuildNumber.c_str()));
 				UE_LOG(LogTemp, Log, TEXT("    BuildType = %s"), *FString(BuildType.c_str()));
 				UE_LOG(LogTemp, Log, TEXT("    DataExecutionPrevention_32BitApplications = %s"), *FString(DataExecutionPrevention_32BitApplications.c_str()));

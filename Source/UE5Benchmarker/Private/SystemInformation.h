@@ -22,8 +22,6 @@ class ASystemInformation : public AActor
 public:	
 	ASystemInformation();
 
-	void LogMotherboardInfo();
-
 	void LogCPUsInfo();
 	void LogGPUsInfo();
 };

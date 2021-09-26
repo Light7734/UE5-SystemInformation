@@ -12,29 +12,18 @@
 
 ASystemInformation::ASystemInformation()
 {
-	LogMotherboardInfo();
-	LogCPUsInfo();
-	LogGPUsInfo();
 
-	for (const auto& osInfo : HardwareInfo::FOS::FetchInfo())
+	for (const auto& motherboardInfo : HardwareInfo::FMotherboard::FetchInfo())
+		motherboardInfo.LogToUE_LOG();
+
+	for (const auto& osInfo : HardwareInfo::FOperatingSystem::FetchInfo())
 		osInfo.LogToUE_LOG();
+
+	LogGPUsInfo();
+	LogCPUsInfo();
 
 	for (const auto& ramInfo : HardwareInfo::FRAM::FetchInfo())
 		ramInfo.LogToUE_LOG();
-}
-
-void ASystemInformation::LogMotherboardInfo()
-{
-	FMotherboardInfoCollector motherboardInfoCollector;
-	for (const auto& motherboardInfo : motherboardInfoCollector.GetMotherboardsInformation())
-	{
-		UE_LOG(LogTemp, Log, TEXT("Information for motherboard #%i"), motherboardInfo.Index);
-		UE_LOG(LogTemp, Log, TEXT("Motherboard Name = %s"), *FString(motherboardInfo.Name.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Motherboard Manufacturer = %s"), *FString(motherboardInfo.Manufacturer.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Motherboard Chipset = %s"), *FString(motherboardInfo.Chipset.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Motherboard Serial Number = %s"), *FString(motherboardInfo.SerialNumber.c_str()));
-		UE_LOG(LogTemp, Log, TEXT("Motherboard Version = %s"), *FString(motherboardInfo.Version.c_str()));
-	}
 }
 
 void ASystemInformation::LogCPUsInfo()
