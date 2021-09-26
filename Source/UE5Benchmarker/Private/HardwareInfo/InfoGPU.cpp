@@ -53,16 +53,16 @@ namespace HardwareInfo {
             {
                 gpuInfo.Index = index;
 
-                // Translate enum values
+                // translate enum values
 				gpuInfo.Availability = TranslateAvailability(gpuInfo.Availability);
                 gpuInfo.CurrentScanMode = TranslateCurrentScanMode(gpuInfo.CurrentScanMode);
                 gpuInfo.VideoArchitecture = TranslateVideoArchitecture(gpuInfo.VideoArchitecture);
                 gpuInfo.VideoMemoryType = TranslateVideoMemoryType(gpuInfo.VideoMemoryType);
 
-                // Convert values
+                // convert values
                 gpuInfo.AdapterRAM = HardwareInfo::ConvertBytesToGigabytes(gpuInfo.AdapterRAM);
 
-                // information that could be extracted from 'wmic' command ends here
+                // information that could be extracted from the 'wmic' command ends here
                 // insert further instructions here
                 // ...
 
@@ -122,7 +122,7 @@ namespace HardwareInfo {
         catch (std::exception e)
         {
             (void)e;
-            UE_LOG(LogTemp, Error, TEXT("Failed to translate availability mode: %s"), *FString(availability.c_str()));
+            UE_LOG(LogTemp, Error, TEXT("Failed to translate gpu availability: %s"), *FString(availability.c_str()));
 			return "";
 		}
     }
@@ -143,7 +143,7 @@ namespace HardwareInfo {
         catch (std::exception e)
         {
             (void)e;
-            UE_LOG(LogTemp, Error, TEXT("Failed to translate current scan mode: %s"), *FString(currentScanMode.c_str()));
+            UE_LOG(LogTemp, Error, TEXT("Failed to translate gpu current scan mode: %s"), *FString(currentScanMode.c_str()));
 			return "";
 		}
     }
@@ -174,7 +174,7 @@ namespace HardwareInfo {
         catch (std::exception e)
         {
             (void)e;
-            UE_LOG(LogTemp, Error, TEXT("Failed to translate vidoe architecture: %s"), *FString(videoArchitecture.c_str()));
+            UE_LOG(LogTemp, Error, TEXT("Failed to translate gpu video architecture: %s"), *FString(videoArchitecture.c_str()));
 			return "";
 		}
     }
@@ -204,7 +204,7 @@ namespace HardwareInfo {
 		catch (std::exception e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to translate vidoe memory type: %s"), *FString(videoMemoryType.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate gpu video memory type: %s"), *FString(videoMemoryType.c_str()));
 			return "";
 		}
     }

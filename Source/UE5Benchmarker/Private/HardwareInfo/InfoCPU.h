@@ -74,9 +74,9 @@ namespace HardwareInfo {
     private:
 		static void TryFetchField(const std::string& iter, const char* fieldName, std::string& outValue);
 
-		static const char* FetchClockSpeed(uint8_t cpuIndex);
-        static const char* FetchTemperature();
-        static const char* DetermineArchitecture(const std::string& dataWidth);
+		static const char* TranslateArchitecture(const std::string& architecture);
+		static const char* TranslateAvailability(const std::string& availability);
+		static const char* TranslateFamiliy(const std::string& family);
     };
 
 }
