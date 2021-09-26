@@ -3,7 +3,7 @@
 FSystemCommand::FSystemCommand(const char* command)
 {
 	FILE* fp = _popen(command, "r");
-	std::string path(256u, NULL);
+	std::string path(1024, NULL);
 
 	if (!fp)
 	{
@@ -12,7 +12,7 @@ FSystemCommand::FSystemCommand(const char* command)
 		return;
 	}
 
-	while (fgets(&path[0], 256u, fp))
+	while (fgets(&path[0], 1024, fp))
 		Result.push_back(path.substr(0, path.find("\r\n")));
 
 	bFailed = !!_pclose(fp);

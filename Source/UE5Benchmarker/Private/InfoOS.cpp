@@ -8,9 +8,9 @@ namespace HardwareInfo {
 	std::vector<FOperatingSystem::Info> FOperatingSystem::FetchInfo()
 	{
 		// query operating-systems
-		FSystemCommand OSQuery("wmic path Win32_OperatingSystem get /format:list");
+		FSystemCommand operatingSystemsQuery("wmic path Win32_OperatingSystem get /format:list");
 
-		if (OSQuery.HasFailed())
+		if (operatingSystemsQuery.HasFailed())
 		{
 			UE_LOG(LogTemp, Error, TEXT("Failed to query operating system"));
 			return {};
@@ -21,7 +21,7 @@ namespace HardwareInfo {
 		Info operatingSystemInfo;
 
 		uint32_t index = 1u;
-		for (auto it : OSQuery.GetResult())
+		for (auto it : operatingSystemsQuery.GetResult())
 		{
 			TryFetchField(it, "BuildNumber=", operatingSystemInfo.BuildNumber);
 			TryFetchField(it, "BuildType=", operatingSystemInfo.BuildType);

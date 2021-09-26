@@ -6,8 +6,8 @@ namespace HardwareInfo {
 	std::vector<FRAM::Info> FRAM::FetchInfo()
 	{
 		// query rams
-		FSystemCommand RAMsQuery("wmic path Win32_PhysicalMemory get /format: list");
-		if (RAMsQuery.HasFailed())
+		FSystemCommand ramsQuery("wmic path Win32_PhysicalMemory get /format: list");
+		if (ramsQuery.HasFailed())
 		{
 			UE_LOG(LogTemp, Error, TEXT("Failed to query RAMs"));
 			return {};
@@ -18,7 +18,7 @@ namespace HardwareInfo {
 		Info ramInfo;
 
 		uint32_t index = 1u;
-		for (auto it : RAMsQuery.GetResult())
+		for (auto it : ramsQuery.GetResult())
 		{
 			TryFetchField(it, "Capacity=", ramInfo.Capacity);
 			TryFetchField(it, "ConfiguredClockSpeed=", ramInfo.ConfiguredClockSpeed);

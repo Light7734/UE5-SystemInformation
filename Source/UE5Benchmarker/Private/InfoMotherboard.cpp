@@ -16,11 +16,11 @@ namespace HardwareInfo {
 			return {};
 		}
 
-		// 
+		// fetch motherboards info
 		std::vector<Info> motherboardsInfo;
 		Info motherboardInfo;
-		uint32_t index = 1u;
 
+		uint32_t index = 1u;
 		for (const auto& it : motherboardsQuery.GetResult())
 		{
 			TryFetchField(it, "Manufacturer=", motherboardInfo.Manufacturer);

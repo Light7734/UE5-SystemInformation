@@ -23,5 +23,4 @@ public:
 	ASystemInformation();
 
 	void LogCPUsInfo();
-	void LogGPUsInfo();
 };
