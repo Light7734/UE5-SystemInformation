@@ -21,6 +21,4 @@ class ASystemInformation : public AActor
 	
 public:	
 	ASystemInformation();
-
-	void LogCPUsInfo();
 };

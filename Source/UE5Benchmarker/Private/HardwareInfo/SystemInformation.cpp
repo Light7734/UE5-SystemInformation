@@ -27,8 +27,3 @@ ASystemInformation::ASystemInformation()
 	for (const auto& ramInfo : HardwareInfo::FRAM::FetchInfo())
 		ramInfo.LogToUE_LOG();
 }
-
-void ASystemInformation::LogCPUsInfo()
-{
-
-}

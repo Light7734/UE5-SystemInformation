@@ -81,8 +81,13 @@ namespace HardwareInfo {
     private:
 		static void TryFetchField(const std::string& iter, const char* fieldName, std::string& outValue);
 
-		static const char* DetermineVideoArchitecture(const std::string videoArchitectureStr);
-        static const char* DetermineVideoMemoryType(const std::string& videoMemoryTypeStr);
+		static const char* TranslateAvailability(const std::string& availability);
+		static const char* TranslateCurrentScanMode(const std::string& currentScanMode);
+		static const char* TranslateVideoArchitecture(const std::string& videoArchitecture);
+        static const char* TranslateVideoMemoryType(const std::string& videoMemoryType);
+
+		static const char* ConvertNColorsToBPP(const std::string& videoMemoryType);
+
     };
 
 }

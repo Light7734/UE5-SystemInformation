@@ -102,7 +102,7 @@ namespace HardwareInfo {
 		case 23: return "DDR2 - FBDIMM";
 		case 24: return "DDR3";
 		case 25: return "FBD2";
-		default: return UNKNOWN_INFO_STR;
+		default: return INFO_STR_UNKNOWN;
 		}
 	}
 
@@ -145,7 +145,7 @@ namespace HardwareInfo {
 		case 21: return "BGA";
 		case 22: return "FPBGA";
 		case 23: return "LGA";
-		default: return UNKNOWN_INFO_STR;
+		default: return INFO_STR_UNKNOWN;
 		}
 	}
 
