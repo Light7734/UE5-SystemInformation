@@ -80,6 +80,15 @@ namespace HardwareInfo {
 
 	private:
 		static void TryFetchField(const std::string& iter, const char* fieldName, std::string& outValue);
+
+		static const char* TranslateDataExecutionPrevention_SupportPolicy(const std::string& dataExecutionPrevention_SupportPolicy);
+		static const char* TranslateForegroundApplicationBoost(const std::string& foregroundApplicationBoost);
+		static const char* TranslateOperatingSystemSKU(const std::string& operatingSystemSKU);
+		static const char* TranslateOSProductSuite(const std::string& osProductSuite);
+		static const char* TranslateOSType(const std::string& osType);
+		static const char* TranslateProductType(const std::string& productType);
+		static const char* TranslateSuiteMask(const std::string& suiteMask);
+
 	};
 
 }

@@ -38,16 +38,12 @@ namespace HardwareInfo {
 			TryFetchField(it, "Manufacturer=", operatingSystemInfo.Manufacturer);
 			TryFetchField(it, "MaxNumberOfProcesses=", operatingSystemInfo.MaxNumberOfProcesses);
 			TryFetchField(it, "MaxProcessMemorySize=", operatingSystemInfo.MaxProcessMemorySize);
-			TryFetchField(it, "OperatingSystemSKU=", operatingSystemInfo.OperatingSystemSKU);
 			TryFetchField(it, "OSArchitecture=", operatingSystemInfo.OSArchitecture);
-			TryFetchField(it, "OSProductSuite=", operatingSystemInfo.OSProductSuite);
-			TryFetchField(it, "OSType=", operatingSystemInfo.OSType);
 			TryFetchField(it, "PortableOperatingSystem=", operatingSystemInfo.PortableOperatingSystem);
 			TryFetchField(it, "Primary=", operatingSystemInfo.Primary);
 			TryFetchField(it, "ProductType=", operatingSystemInfo.ProductType);
 			TryFetchField(it, "SizeStoredInPagingFiles=", operatingSystemInfo.SizeStoredInPagingFiles);
 			TryFetchField(it, "Status=", operatingSystemInfo.Status);
-			TryFetchField(it, "SuiteMask=", operatingSystemInfo.SuiteMask);
 			TryFetchField(it, "TotalVirtualMemorySize=", operatingSystemInfo.TotalVirtualMemorySize);
 			TryFetchField(it, "TotalVisibleMemorySize=", operatingSystemInfo.TotalVirtualMemorySize);
 			TryFetchField(it, "Version=", operatingSystemInfo.Version);
@@ -56,6 +52,10 @@ namespace HardwareInfo {
 			{
 				operatingSystemInfo.Index = index++;
 				
+				operatingSystemInfo.DataExecutionPrevention_SupportPolicy = TranslateDataExecutionPrevention_SupportPolicy(operatingSystemInfo.DataExecutionPrevention_SupportPolicy);
+				operatingSystemInfo.ForegroundApplicationBoost = TranslateForegroundApplicationBoost(operatingSystemInfo.ForegroundApplicationBoost);
+				operatingSystemInfo.ProductType = TranslateProductType(operatingSystemInfo.ProductType);
+
 				// store current operating-system info then reset it
 				operatingSystemsInfo.push_back(operatingSystemInfo);
 				operatingSystemInfo = Info();
@@ -74,6 +74,67 @@ namespace HardwareInfo {
 
 		if (outValue == "")
 			outValue = INFO_STR_UNKNOWN;
+	}
+
+	const char* FOperatingSystem::TranslateDataExecutionPrevention_SupportPolicy(const std::string& dataExecutionPrevention_SupportPolicy)
+	{
+		try
+		{
+			switch (std::stoi(dataExecutionPrevention_SupportPolicy))
+			{
+			case 0: return "Always Off";
+			case 1: return "Always On";
+			case 2: return "Opt In";
+			case 3: return "Opt Out";
+			default: return INFO_STR_UNKNOWN;
+			}
+		}
+		catch (std::exception e)
+		{
+			(void)e;
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate DataExecutionPrevention_SupportPolicy: %s"), *FString(dataExecutionPrevention_SupportPolicy.c_str()));
+			return "";
+		}
+	}
+
+	const char* FOperatingSystem::TranslateForegroundApplicationBoost(const std::string& foregroundApplicationBoost)
+	{
+		try
+		{
+			switch (std::stoi(foregroundApplicationBoost))
+			{
+			case 0: return "None";
+			case 1: return "Minimum";
+			case 2: return "Maximum";
+			default: return INFO_STR_UNKNOWN;
+			}
+		}
+		catch (std::exception e)
+		{
+			(void)e;
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate foreground application boost: %s"), *FString(foregroundApplicationBoost.c_str()));
+			return "";
+		}
+	}
+
+	const char* FOperatingSystem::TranslateProductType(const std::string& productType)
+	{
+		try
+		{
+			switch (std::stoi(productType))
+			{
+			case 1: return "Work Station";
+			case 2: return "Domain Controller";
+			case 3: return "Server";
+			default: return INFO_STR_UNKNOWN;
+			}
+		}
+		catch (std::exception e)
+		{
+			(void)e;
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate product type: %s"), *FString(productType.c_str()));
+			return "";
+		}
 	}
 
 }
