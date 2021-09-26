@@ -64,10 +64,13 @@ namespace HardwareInfo {
 				cpuInfo.Family = TranslateFamiliy(cpuInfo.Family);
 
 				// convert values
+				// #todo:
+
 
 				// information that could be extracted from the 'wmic' command ends here
                 // insert further instructions here
                 // ...
+
 
 				// store current cpu info then reset it
 				cpusInfo.push_back(cpuInfo);

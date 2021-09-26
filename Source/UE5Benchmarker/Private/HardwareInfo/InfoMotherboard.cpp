@@ -32,6 +32,12 @@ namespace HardwareInfo {
 			{
 				motherboardInfo.Index = index++;
 
+
+				// information that could be extracted from the 'wmic' command ends here
+                // insert further instructions here
+                // ...
+
+
 				// store current motherboard info then reset it
 				motherboardsInfo.push_back(motherboardInfo);
 				motherboardInfo = Info();

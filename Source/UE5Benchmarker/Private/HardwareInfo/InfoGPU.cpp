@@ -62,6 +62,7 @@ namespace HardwareInfo {
                 // convert values
                 gpuInfo.AdapterRAM = HardwareInfo::ConvertBytesToGigabytes(gpuInfo.AdapterRAM);
 
+
                 // information that could be extracted from the 'wmic' command ends here
                 // insert further instructions here
                 // ...

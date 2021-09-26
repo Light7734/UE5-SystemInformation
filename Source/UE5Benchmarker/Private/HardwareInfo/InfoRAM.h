@@ -62,8 +62,9 @@ namespace HardwareInfo {
 	private:
 		static void TryFetchField(const std::string& iter, const char* fieldName, std::string& outValue);
 
-		static std::string DetermineMemoryType(const std::string& memoryTypeString);
-		static std::string DetermineFormFactor(const std::string& formFactorString);
+		static const char* TranslateFormFactor(const std::string& formFactor);
+		static const char* TranslateSMBIOSMemoryType(const std::string& smbiosMemoryType);
+		static const char* TranslateTypeDetail(const std::string& typeDetail);
 	};
 
 }

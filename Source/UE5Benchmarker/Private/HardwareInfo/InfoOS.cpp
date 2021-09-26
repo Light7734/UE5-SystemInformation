@@ -52,9 +52,24 @@ namespace HardwareInfo {
 			{
 				operatingSystemInfo.Index = index++;
 				
+				// translate enum types
 				operatingSystemInfo.DataExecutionPrevention_SupportPolicy = TranslateDataExecutionPrevention_SupportPolicy(operatingSystemInfo.DataExecutionPrevention_SupportPolicy);
 				operatingSystemInfo.ForegroundApplicationBoost = TranslateForegroundApplicationBoost(operatingSystemInfo.ForegroundApplicationBoost);
 				operatingSystemInfo.ProductType = TranslateProductType(operatingSystemInfo.ProductType);
+
+				// convert values
+				operatingSystemInfo.FreePhysicalMemory = HardwareInfo::ConvertBytesToGigabytes(operatingSystemInfo.FreePhysicalMemory);
+				operatingSystemInfo.FreeSpaceInPagingFiles = HardwareInfo::ConvertBytesToGigabytes(operatingSystemInfo.FreeSpaceInPagingFiles);
+				operatingSystemInfo.FreeVirtualMemory = HardwareInfo::ConvertBytesToGigabytes(operatingSystemInfo.FreeVirtualMemory);
+				operatingSystemInfo.MaxProcessMemorySize = HardwareInfo::ConvertBytesToGigabytes(operatingSystemInfo.MaxProcessMemorySize);
+				operatingSystemInfo.TotalVirtualMemorySize = HardwareInfo::ConvertBytesToGigabytes(operatingSystemInfo.TotalVirtualMemorySize);
+				operatingSystemInfo.TotalVisibleMemorySize = HardwareInfo::ConvertBytesToGigabytes(operatingSystemInfo.TotalVisibleMemorySize);
+
+
+				// information that could be extracted from the 'wmic' command ends here
+                // insert further instructions here
+                // ...
+
 
 				// store current operating-system info then reset it
 				operatingSystemsInfo.push_back(operatingSystemInfo);
@@ -92,7 +107,7 @@ namespace HardwareInfo {
 		catch (std::exception e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to translate DataExecutionPrevention_SupportPolicy: %s"), *FString(dataExecutionPrevention_SupportPolicy.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate operating system DataExecutionPrevention_SupportPolicy: %s"), *FString(dataExecutionPrevention_SupportPolicy.c_str()));
 			return "";
 		}
 	}
@@ -112,7 +127,7 @@ namespace HardwareInfo {
 		catch (std::exception e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to translate foreground application boost: %s"), *FString(foregroundApplicationBoost.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate operating system foreground application boost: %s"), *FString(foregroundApplicationBoost.c_str()));
 			return "";
 		}
 	}
@@ -132,7 +147,7 @@ namespace HardwareInfo {
 		catch (std::exception e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to translate product type: %s"), *FString(productType.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate operating system product type: %s"), *FString(productType.c_str()));
 			return "";
 		}
 	}
