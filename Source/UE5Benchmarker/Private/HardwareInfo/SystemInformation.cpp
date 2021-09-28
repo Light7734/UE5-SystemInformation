@@ -9,6 +9,7 @@
 #include "InfoRam.h"
 #include "InfoCPU.h"
 #include "InfoGPU.h"
+#include "InfoHardDisk.h"
 
 ASystemInformation::ASystemInformation()
 {
@@ -26,4 +27,7 @@ ASystemInformation::ASystemInformation()
 
 	for (const auto& ramInfo : HardwareInfo::FRAM::FetchInfo())
 		ramInfo.LogToUE_LOG();
+
+	for (const auto& hardDiskinfo : HardwareInfo::FHardDisk::FetchInfo())
+		hardDiskinfo.LogToUE_LOG();
 }

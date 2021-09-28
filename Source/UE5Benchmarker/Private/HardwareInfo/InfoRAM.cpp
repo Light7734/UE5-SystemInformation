@@ -70,7 +70,7 @@ namespace HardwareInfo {
 		if (outValue != INFO_STR_UNKNOWN)
 			return;
 
-		outValue = iter.find(fieldName) != std::string::npos ? iter.substr(iter.find(fieldName) + std::strlen(fieldName)) : INFO_STR_UNKNOWN;
+		outValue = iter.find(fieldName) == 0u ? iter.substr(iter.find(fieldName) + std::strlen(fieldName)) : INFO_STR_UNKNOWN;
 
 		if (outValue == "")
 			outValue = INFO_STR_UNKNOWN;

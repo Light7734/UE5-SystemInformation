@@ -26,16 +26,12 @@ namespace HardwareInfo {
 			std::string Manufacturer = INFO_STR_UNKNOWN;
 			std::string MaxNumberOfProcesses = INFO_STR_UNKNOWN;
 			std::string MaxProcessMemorySize = INFO_STR_UNKNOWN;
-			std::string OperatingSystemSKU = INFO_STR_UNKNOWN;
 			std::string OSArchitecture = INFO_STR_UNKNOWN;
-			std::string OSProductSuite = INFO_STR_UNKNOWN;
-			std::string OSType = INFO_STR_UNKNOWN;
 			std::string PortableOperatingSystem = INFO_STR_UNKNOWN;
 			std::string Primary = INFO_STR_UNKNOWN;
 			std::string ProductType = INFO_STR_UNKNOWN;
 			std::string SizeStoredInPagingFiles = INFO_STR_UNKNOWN;
 			std::string Status = INFO_STR_UNKNOWN;
-			std::string SuiteMask = INFO_STR_UNKNOWN;
 			std::string TotalVirtualMemorySize = INFO_STR_UNKNOWN;
 			std::string TotalVisibleMemorySize = INFO_STR_UNKNOWN;
 			std::string Version = INFO_STR_UNKNOWN;
@@ -59,15 +55,11 @@ namespace HardwareInfo {
 				UE_LOG(LogTemp, Log, TEXT("    Manufacturer = %s"), *FString(Manufacturer.c_str()));
 				UE_LOG(LogTemp, Log, TEXT("    MaxNumberOfProcesses = %s"), *FString(MaxNumberOfProcesses.c_str()));
 				UE_LOG(LogTemp, Log, TEXT("    MaxProcessMemorySize = %s"), *FString(MaxProcessMemorySize.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    OperatingSystemSKU = %s"), *FString(OperatingSystemSKU.c_str()));
 				UE_LOG(LogTemp, Log, TEXT("    OSArchitecture = %s"), *FString(OSArchitecture.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    OSProductSuite = %s"), *FString(OSProductSuite.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    OSType = %s"), *FString(OSType.c_str()));
 				UE_LOG(LogTemp, Log, TEXT("    PortableOperatingSystem = %s"), *FString(PortableOperatingSystem.c_str()));
 				UE_LOG(LogTemp, Log, TEXT("    Primary = %s"), *FString(Primary.c_str()));
 				UE_LOG(LogTemp, Log, TEXT("    ProductType = %s"), *FString(ProductType.c_str()));
 				UE_LOG(LogTemp, Log, TEXT("    Status = %s"), *FString(Status.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    SuiteMask = %s"), *FString(SuiteMask.c_str()));
 				UE_LOG(LogTemp, Log, TEXT("    TotalVirtualMemorySize = %s"), *FString(TotalVirtualMemorySize.c_str()));
 				UE_LOG(LogTemp, Log, TEXT("    TotalVisibleMemorySize = %s"), *FString(TotalVisibleMemorySize.c_str()));
 				UE_LOG(LogTemp, Log, TEXT("    Version = %s"), *FString(Version.c_str()));
@@ -83,11 +75,7 @@ namespace HardwareInfo {
 
 		static const char* TranslateDataExecutionPrevention_SupportPolicy(const std::string& dataExecutionPrevention_SupportPolicy);
 		static const char* TranslateForegroundApplicationBoost(const std::string& foregroundApplicationBoost);
-		static const char* TranslateOperatingSystemSKU(const std::string& operatingSystemSKU);
-		static const char* TranslateOSProductSuite(const std::string& osProductSuite);
-		static const char* TranslateOSType(const std::string& osType);
 		static const char* TranslateProductType(const std::string& productType);
-		static const char* TranslateSuiteMask(const std::string& suiteMask);
 
 	};
 
