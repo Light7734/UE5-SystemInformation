@@ -9,6 +9,6 @@ public class UE5BenchmarkerTarget : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange( new string[] { "UE5Benchmarker" } );
+		ExtraModuleNames.AddRange( new string[] { "UE5Benchmarker", "SystemInformation" } );
 	}
 }

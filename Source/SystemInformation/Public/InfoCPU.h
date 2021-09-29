@@ -6,7 +6,7 @@
 
 namespace HardwareInfo {
 
-    class FCPU
+    class SYSTEMINFORMATION_API FCPU
     {
     public:
 		struct Info

@@ -6,7 +6,7 @@
 
 namespace HardwareInfo {
 
-	class FMotherboard
+	class SYSTEMINFORMATION_API FMotherboard
 	{
 	public:
 		struct Info

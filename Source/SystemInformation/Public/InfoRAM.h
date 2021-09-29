@@ -6,7 +6,7 @@
 
 namespace HardwareInfo {
 
-	class FRAM
+	class SYSTEMINFORMATION_API FRAM
 	{
 	public:
 		struct Info

@@ -1,8 +1,6 @@
 // Created by Light3039, under MIT5 license
 
-#include "SystemInformation.h"
-
-#include <intrin.h>
+#include "SystemInformationLogger.h"
 
 #include "InfoMotherboard.h"
 #include "InfoOS.h"
@@ -11,7 +9,7 @@
 #include "InfoGPU.h"
 #include "InfoHardDisk.h"
 
-ASystemInformation::ASystemInformation()
+ASystemInformationLogger::ASystemInformationLogger()
 {
 	for (const auto& motherboardInfo : HardwareInfo::FMotherboard::FetchInfo())
 		motherboardInfo.LogToUE_LOG();

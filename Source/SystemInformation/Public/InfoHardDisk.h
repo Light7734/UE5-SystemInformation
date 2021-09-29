@@ -6,7 +6,7 @@
 
 namespace HardwareInfo {
 	
-	class FHardDisk
+	class SYSTEMINFORMATION_API FHardDisk
 	{
 	public:
 		struct Info

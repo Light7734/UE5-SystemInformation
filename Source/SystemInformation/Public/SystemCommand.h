@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <vector>
 
-class FSystemCommand
+class SYSTEMINFORMATION_API FSystemCommand
 {
 public:
     FSystemCommand(const char* command);

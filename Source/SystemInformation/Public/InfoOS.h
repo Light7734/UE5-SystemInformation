@@ -6,7 +6,7 @@
 
 namespace HardwareInfo {
 
-	class FOperatingSystem
+	class SYSTEMINFORMATION_API FOperatingSystem
 	{
 	public:
 		struct Info
