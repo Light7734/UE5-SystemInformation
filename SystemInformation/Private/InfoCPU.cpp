@@ -355,73 +355,34 @@ namespace SystemInfo {
 		}
 	}
 
-	//const char* FCPU::FetchClockSpeed(uint8_t cpuIndex)
-	//{
-	//	return "";
-	//	// FSystemCommand clockSpeedQuery{ CLOCK_SPEED_QUERY_STRING };
-	//	// const char* clockSpeed = UNKNOWN_INFO_STR;
-	//	// 
-	//	// if (clockSpeedQuery.HasFailed() || clockSpeedQuery.GetResult().empty())
-	//	// 	return clockSpeed;
-	//	// 
-	//	// int cpuInfoNumber = 0;
-	//	// 
-	//	// std::string speed = clockSpeedQuery.GetResult()[cpuIndex];
-	//	// if ((speed.find(CURRENT_CLOCK_SPEED_IDENTIFIER_STRING) != std::string::npos) && (speed.find(CURRENT_CLOCK_SPEED_IDENTIFIER_STRING) == 0))
-	//	// 	clockSpeed = (speed.substr(speed.find(CURRENT_CLOCK_SPEED_IDENTIFIER_STRING) + std::strlen(CURRENT_CLOCK_SPEED_IDENTIFIER_STRING)) + "MHz").c_str();
-	//	// 
-	//	// // #todo: validate
-	//	// if ((!strcmp(clockSpeed, "MHz")) || !strcmp(clockSpeed, ""))
-	//	// 	clockSpeed = "Unknown";
-	//	// 
-	//	// return clockSpeed;
-	//}
-	//
-	//const char* FCPU::FetchTemperature()
-	//{
-	//	return "";
-	//	// // #todo: I have no idea what's this
-	//	// // 
-	//	// // NOTE: THIS IS NOT SUPPORTED BY ALL COMPUTERS !!!
-	//	// const char* temperature = INFO_STR_UNKNOWN;
-	//	// FSystemCommand temperatureQuery{ TEMPERATURE_QUERY_STRING };
-	//	// 
-	//	// if (temperatureQuery.HasFailed())
-	//	// 	return temperature;
-	//	// 
-	//	// for (const auto& iter : temperatureQuery)
-	//	// {
-	//	// 	if (iter.find(TEMPERATURE_ERROR_IDENTIFIER_STRING))
-	//	// 		continue;
-	//	// 
-	//	// 	std::string rawTemp = *(temperatureQuery.begin() + 1);
-	//	// 	try {
-	//	// 		temperature = (std::to_string(std::stoi(rawTemp) - 273) + "C").c_str();
-	//	// 	}
-	//	// 	catch (std::exception& e) {
-	//	// 		(void)e;
-	//	// 		return temperature;
-	//	// 	}
-	//	// }
-	//	// 
-	//	// return temperature;
-	//}
-	//
-	//const char* FCPU::DetermineArchitecture(const std::string& dataWidth)
-	//{
-	//	return "";
-	//	// try {
-	//	// 	int dataWidthInt = std::stoi(dataWidth);
-	//	// 	switch (dataWidthInt) {
-	//	// 	case 32: return "x86";
-	//	// 	case 64: return "x86_64";
-	//	// 	default: return "Unknown";
-	//	// 	}
-	//	// }
-	//	// catch (std::exception& e) {
-	//	// 	(void)e;
-	//	// 	return "Unknown";
-	//	// }
-	//}
+	DEFINE_LOG_CATEGORY_STATIC(SystemInfo, Log, All);
+	void FCPU::Info::LogToUE_LOG() const
+	{
+		UE_LOG(SystemInfo, Log, TEXT("CPU #%i {"), Index);
+		UE_LOG(SystemInfo, Log, TEXT("    Architecture = %s"), *FString(Architecture.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    Availability = %s"), *FString(Availability.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    Caption = %s"), *FString(Caption.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    Characteristics = %s"), *FString(Characteristics.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    CpuStatus = %s"), *FString(CpuStatus.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    CurrentClockSpeed = %s"), *FString(CurrentClockSpeed.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    CurrentVoltage = %s"), *FString(CurrentVoltage.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    Description = %s"), *FString(Description.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    DeviceID = %s"), *FString(DeviceID.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    ExtClock = %s"), *FString(ExtClock.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    Family = %s"), *FString(Family.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    L2CacheSize = %s"), *FString(L2CacheSize.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    L3CacheSize = %s"), *FString(L3CacheSize.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    LoadPercentage = %s"), *FString(LoadPercentage.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    Manufacturer = %s"), *FString(Manufacturer.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    MaxClockSpeed = %s"), *FString(MaxClockSpeed.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    NumberOfCores = %s"), *FString(NumberOfCores.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    NumberOfEnabledCore = %s"), *FString(NumberOfEnabledCore.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    NumberOfLogicalProcessors = %s"), *FString(NumberOfLogicalProcessors.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    SecondLevelAddressTranslationExtensions = %s"), *FString(SecondLevelAddressTranslationExtensions.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    SocketDesignation = %s"), *FString(SocketDesignation.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    Status = %s"), *FString(Status.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    ThreadCount = %s"), *FString(ThreadCount.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("}"));
+	}
 
 }

@@ -9,7 +9,7 @@ namespace SystemInfo {
 	class SYSTEMINFORMATION_API FOperatingSystem
 	{
 	public:
-		struct Info
+		struct SYSTEMINFORMATION_API Info
 		{
 			std::string BuildNumber = INFO_STR_UNKNOWN;
 			std::string BuildType = INFO_STR_UNKNOWN;
@@ -38,33 +38,7 @@ namespace SystemInfo {
 
 			uint32_t Index;
 
-			void LogToUE_LOG() const
-			{
-				UE_LOG(LogTemp, Log, TEXT("Operating System #%i {"), Index);
-				UE_LOG(LogTemp, Log, TEXT("    BuildNumber = %s"), *FString(BuildNumber.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    BuildType = %s"), *FString(BuildType.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    DataExecutionPrevention_32BitApplications = %s"), *FString(DataExecutionPrevention_32BitApplications.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    DataExecutionPrevention_Available = %s"), *FString(DataExecutionPrevention_Available.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    DataExecutionPrevention_Drivers = %s"), *FString(DataExecutionPrevention_Drivers.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    DataExecutionPrevention_SupportPolicy = %s"), *FString(DataExecutionPrevention_SupportPolicy.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Distributed = %s"), *FString(Distributed.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    ForegroundApplicationBoost = %s"), *FString(ForegroundApplicationBoost.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    FreePhysicalMemory = %s"), *FString(FreePhysicalMemory.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    FreeSpaceInPagingFiles = %s"), *FString(FreeSpaceInPagingFiles.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    FreeVirtualMemory = %s"), *FString(FreeVirtualMemory.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Manufacturer = %s"), *FString(Manufacturer.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    MaxNumberOfProcesses = %s"), *FString(MaxNumberOfProcesses.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    MaxProcessMemorySize = %s"), *FString(MaxProcessMemorySize.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    OSArchitecture = %s"), *FString(OSArchitecture.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    PortableOperatingSystem = %s"), *FString(PortableOperatingSystem.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Primary = %s"), *FString(Primary.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    ProductType = %s"), *FString(ProductType.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Status = %s"), *FString(Status.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    TotalVirtualMemorySize = %s"), *FString(TotalVirtualMemorySize.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    TotalVisibleMemorySize = %s"), *FString(TotalVisibleMemorySize.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Version = %s"), *FString(Version.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("}"));
-			}
+			void LogToUE_LOG() const;
 		};
 
 	public:

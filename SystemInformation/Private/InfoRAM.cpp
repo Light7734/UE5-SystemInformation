@@ -192,4 +192,30 @@ namespace SystemInfo {
 		}
 	}
 
+
+	DEFINE_LOG_CATEGORY_STATIC(SystemInfo, Log, All);
+	void FRAM::Info::LogToUE_LOG() const
+	{
+		UE_LOG(SystemInfo, Log, TEXT("RAM #%i {"), Index);
+		UE_LOG(SystemInfo, Log, TEXT("    Capacity = %s"), *FString(Capacity.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    ConfiguredClockSpeed = %s"), *FString(ConfiguredClockSpeed.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    ConfiguredVoltage = %s"), *FString(ConfiguredVoltage.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    DataWidth = %s"), *FString(DataWidth.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    DeviceLocator = %s"), *FString(DeviceLocator.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    FormFactor = %s"), *FString(FormFactor.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    InterleaveDataDepth = %s"), *FString(InterleaveDataDepth.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    InterleavePosition = %s"), *FString(InterleavePosition.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    Manufacturer = %s"), *FString(Manufacturer.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    MaxVoltage = %s"), *FString(MaxVoltage.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    MinVoltage = %s"), *FString(MinVoltage.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    PartNumber = %s"), *FString(PartNumber.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    MinVoltage = %s"), *FString(MinVoltage.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    SMBIOSMemoryType = %s"), *FString(SMBIOSMemoryType.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    Speed = %s"), *FString(Speed.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    Tag = %s"), *FString(Tag.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    TotalWidth = %s"), *FString(TotalWidth.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    TypeDetail = %s"), *FString(TypeDetail.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("}"));
+	}
+
 }

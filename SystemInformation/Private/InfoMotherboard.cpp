@@ -58,4 +58,16 @@ namespace SystemInfo {
 			outValue = INFO_STR_UNKNOWN;
 	}
 
+
+	DEFINE_LOG_CATEGORY_STATIC(SystemInfo, Log, All);
+	void FMotherboard::Info::LogToUE_LOG() const
+	{
+		UE_LOG(SystemInfo, Log, TEXT("Motherboard #%i {"), Index);
+		UE_LOG(SystemInfo, Log, TEXT("    Manufacturer = %s"), *FString(Manufacturer.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    Product = %s"), *FString(Product.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    Status = %s"), *FString(Status.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("    Version = %s"), *FString(Version.c_str()));
+		UE_LOG(SystemInfo, Log, TEXT("}"));
+	}
+
 }

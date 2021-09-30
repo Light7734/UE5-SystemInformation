@@ -7,6 +7,7 @@
 
 #define INFO_DECIMAL_POINTS 2.0
 
+
 namespace SystemInfo {
 
 	enum class EDataUnit

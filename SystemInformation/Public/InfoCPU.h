@@ -9,7 +9,7 @@ namespace SystemInfo {
     class SYSTEMINFORMATION_API FCPU
     {
     public:
-		struct Info
+		struct SYSTEMINFORMATION_API Info
 		{
 			std::string Architecture = INFO_STR_UNKNOWN;
 			std::string Availability = INFO_STR_UNKNOWN;
@@ -38,34 +38,7 @@ namespace SystemInfo {
 
 			uint32_t Index;
 
-			void LogToUE_LOG() const
-			{
-				UE_LOG(LogTemp, Log, TEXT("CPU #%i {"), Index);
-				UE_LOG(LogTemp, Log, TEXT("    Architecture = %s"), *FString(Architecture.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Availability = %s"), *FString(Availability.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Caption = %s"), *FString(Caption.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Characteristics = %s"), *FString(Characteristics.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    CpuStatus = %s"), *FString(CpuStatus.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    CurrentClockSpeed = %s"), *FString(CurrentClockSpeed.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    CurrentVoltage = %s"), *FString(CurrentVoltage.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Description = %s"), *FString(Description.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    DeviceID = %s"), *FString(DeviceID.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    ExtClock = %s"), *FString(ExtClock.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Family = %s"), *FString(Family.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    L2CacheSize = %s"), *FString(L2CacheSize.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    L3CacheSize = %s"), *FString(L3CacheSize.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    LoadPercentage = %s"), *FString(LoadPercentage.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Manufacturer = %s"), *FString(Manufacturer.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    MaxClockSpeed = %s"), *FString(MaxClockSpeed.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    NumberOfCores = %s"), *FString(NumberOfCores.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    NumberOfEnabledCore = %s"), *FString(NumberOfEnabledCore.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    NumberOfLogicalProcessors = %s"), *FString(NumberOfLogicalProcessors.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    SecondLevelAddressTranslationExtensions = %s"), *FString(SecondLevelAddressTranslationExtensions.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    SocketDesignation = %s"), *FString(SocketDesignation.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Status = %s"), *FString(Status.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    ThreadCount = %s"), *FString(ThreadCount.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("}"));
-			}
+			void LogToUE_LOG() const;
 		};
 
     public:

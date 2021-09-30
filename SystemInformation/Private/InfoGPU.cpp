@@ -210,4 +210,38 @@ namespace SystemInfo {
 		}
     }
 
+	DEFINE_LOG_CATEGORY_STATIC(SystemInfo, Log, All);
+    void FGPU::Info::LogToUE_LOG() const
+    {
+        UE_LOG(SystemInfo, Log, TEXT("GPU #%i {"), Index);
+        UE_LOG(SystemInfo, Log, TEXT("    AdapterCompatibility = %s"), *FString(AdapterCompatibility.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    AdapterDACType = %s"), *FString(AdapterDACType.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    AdapterRAM = %s"), *FString(AdapterRAM.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    Availability = %s"), *FString(Availability.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    Caption = %s"), *FString(Caption.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    CurrentBitsPerPixel = %s"), *FString(CurrentBitsPerPixel.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    CurrentHorizontalResolution = %s"), *FString(CurrentHorizontalResolution.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    CurrentNumberOfColors = %s"), *FString(CurrentNumberOfColors.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    CurrentRefreshRate = %s"), *FString(CurrentRefreshRate.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    CurrentScanMode = %s"), *FString(CurrentScanMode.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    CurrentVerticalResolution = %s"), *FString(CurrentVerticalResolution.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    Description = %s"), *FString(Description.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    DeviceID = %s"), *FString(DeviceID.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    DriverDate = %s"), *FString(DriverDate.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    DriverVersion = %s"), *FString(DriverVersion.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    InfFilename = %s"), *FString(InfFilename.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    InfSection = %s"), *FString(InfSection.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    InstalledDisplayDrivers = %s"), *FString(InstalledDisplayDrivers.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    MaxRefreshRate = %s"), *FString(MaxRefreshRate.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    MinRefreshRate = %s"), *FString(MinRefreshRate.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    Monochrome = %s"), *FString(Monochrome.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    Name = %s"), *FString(Name.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    Status = %s"), *FString(Status.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    VideoArchitecture = %s"), *FString(VideoArchitecture.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    VideoMemoryType = %s"), *FString(VideoMemoryType.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    VideoModeDescription = %s"), *FString(VideoModeDescription.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    VideoProcessor = %s"), *FString(VideoProcessor.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("}"));
+    }
+
 }

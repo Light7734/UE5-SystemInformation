@@ -9,7 +9,7 @@ namespace SystemInfo {
 	class SYSTEMINFORMATION_API FMotherboard
 	{
 	public:
-		struct Info
+		struct SYSTEMINFORMATION_API Info
 		{
 			std::string Manufacturer = INFO_STR_UNKNOWN;
 			std::string Product = INFO_STR_UNKNOWN;
@@ -18,15 +18,7 @@ namespace SystemInfo {
 
 			uint8_t Index = 0u;
 
-			void LogToUE_LOG() const
-			{
-				UE_LOG(LogTemp, Log, TEXT("Motherboard #%i {"), Index);
-				UE_LOG(LogTemp, Log, TEXT("    Manufacturer = %s"), *FString(Manufacturer.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Product = %s"), *FString(Product.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Status = %s"), *FString(Status.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("    Version = %s"), *FString(Version.c_str()));
-				UE_LOG(LogTemp, Log, TEXT("}"));
-			}
+			void LogToUE_LOG() const;
 		};
 
 	public:
