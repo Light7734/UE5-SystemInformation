@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace HardwareInfo {
+namespace SystemInfo {
 
 	class SYSTEMINFORMATION_API FOperatingSystem
 	{

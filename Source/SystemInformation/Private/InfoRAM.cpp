@@ -1,7 +1,7 @@
 #include "InfoRAM.h"
 #include "systemcommand.h"
 
-namespace HardwareInfo {
+namespace SystemInfo {
 
 	std::vector<FRAM::Info> FRAM::FetchInfo()
 	{
@@ -48,7 +48,7 @@ namespace HardwareInfo {
 				ramInfo.TypeDetail = TranslateFormFactor(ramInfo.TypeDetail);
 
 				// convert values
-				ramInfo.Capacity = HardwareInfo::ConvertBytesToGigabytes(ramInfo.Capacity);
+				ramInfo.Capacity = ConvertDataUnits(ramInfo.Capacity, EDataUnit::Byte);
 
 
 				// information that could be extracted from the 'wmic' command ends here

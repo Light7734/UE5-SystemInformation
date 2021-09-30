@@ -2,7 +2,7 @@
 
 #include "SystemCommand.h"
 
-namespace HardwareInfo {
+namespace SystemInfo {
 
 	std::vector<FHardDisk::Info> FHardDisk::FetchInfo()
 	{
@@ -44,9 +44,14 @@ namespace HardwareInfo {
 			{
 				hardDiskInfo.Index = index++;
 
+				// convert values
+				hardDiskInfo.Size = ConvertDataUnits(hardDiskInfo.Size, EDataUnit::Byte);
+
+
 				// information that could be extracted from the 'wmic' command ends here
 				// insert further instructions here
 				// ...
+
 
 				// store current hard-disk info then reset it
 				hardDisksInfo.push_back(hardDiskInfo);

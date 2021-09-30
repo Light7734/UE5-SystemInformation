@@ -1,14 +1,7 @@
 #include "InfoCPU.h"
 #include "SystemCommand.h"
 
-#define TEMPERATURE_QUERY_STRING "wmic /namespace:\\\\root\\wmi PATH MSAcpi_ThermalZoneTemperature get CurrentTemperature"
-#define CLOCK_SPEED_QUERY_STRING "wmic cpu get /format:list | findstr /R /C:CurrentClockSpeed="
-
-#define	CPU_INFO_QUERY_STRING ""
-#define CPU_INSTANCE_QUERY_STRING "AssetTag="
-#define CPU_INFO_END_IDENTIFIER_STRING "VoltageCaps="
-
-namespace HardwareInfo {
+namespace SystemInfo {
 
 	std::vector<FCPU::Info> FCPU::FetchInfo()
 	{

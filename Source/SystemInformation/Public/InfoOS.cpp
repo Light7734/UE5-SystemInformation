@@ -3,7 +3,7 @@
 
 #define KILOBYTES_PER_MEGABYTE 1000
 
-namespace HardwareInfo {
+namespace SystemInfo {
 
 	std::vector<FOperatingSystem::Info> FOperatingSystem::FetchInfo()
 	{
@@ -45,7 +45,7 @@ namespace HardwareInfo {
 			TryFetchField(it, "SizeStoredInPagingFiles=", operatingSystemInfo.SizeStoredInPagingFiles);
 			TryFetchField(it, "Status=", operatingSystemInfo.Status);
 			TryFetchField(it, "TotalVirtualMemorySize=", operatingSystemInfo.TotalVirtualMemorySize);
-			TryFetchField(it, "TotalVisibleMemorySize=", operatingSystemInfo.TotalVirtualMemorySize);
+			TryFetchField(it, "TotalVisibleMemorySize=", operatingSystemInfo.TotalVisibleMemorySize);
 			TryFetchField(it, "Version=", operatingSystemInfo.Version);
 
 			if (it.find("Version=") == 0u)
@@ -58,12 +58,12 @@ namespace HardwareInfo {
 				operatingSystemInfo.ProductType = TranslateProductType(operatingSystemInfo.ProductType);
 
 				// convert values
-				operatingSystemInfo.FreePhysicalMemory = HardwareInfo::ConvertBytesToGigabytes(operatingSystemInfo.FreePhysicalMemory);
-				operatingSystemInfo.FreeSpaceInPagingFiles = HardwareInfo::ConvertBytesToGigabytes(operatingSystemInfo.FreeSpaceInPagingFiles);
-				operatingSystemInfo.FreeVirtualMemory = HardwareInfo::ConvertBytesToGigabytes(operatingSystemInfo.FreeVirtualMemory);
-				operatingSystemInfo.MaxProcessMemorySize = HardwareInfo::ConvertBytesToGigabytes(operatingSystemInfo.MaxProcessMemorySize);
-				operatingSystemInfo.TotalVirtualMemorySize = HardwareInfo::ConvertBytesToGigabytes(operatingSystemInfo.TotalVirtualMemorySize);
-				operatingSystemInfo.TotalVisibleMemorySize = HardwareInfo::ConvertBytesToGigabytes(operatingSystemInfo.TotalVisibleMemorySize);
+				operatingSystemInfo.FreePhysicalMemory = ConvertDataUnits(operatingSystemInfo.FreePhysicalMemory, EDataUnit::KiloByte);
+				operatingSystemInfo.FreeSpaceInPagingFiles = ConvertDataUnits(operatingSystemInfo.FreeSpaceInPagingFiles, EDataUnit::KiloByte);
+				operatingSystemInfo.FreeVirtualMemory = ConvertDataUnits(operatingSystemInfo.FreeVirtualMemory, EDataUnit::KiloByte);
+				operatingSystemInfo.MaxProcessMemorySize = ConvertDataUnits(operatingSystemInfo.MaxProcessMemorySize, EDataUnit::KiloByte);
+				operatingSystemInfo.TotalVirtualMemorySize = ConvertDataUnits(operatingSystemInfo.TotalVirtualMemorySize, EDataUnit::KiloByte);
+				operatingSystemInfo.TotalVisibleMemorySize = ConvertDataUnits(operatingSystemInfo.TotalVisibleMemorySize, EDataUnit::KiloByte);
 
 
 				// information that could be extracted from the 'wmic' command ends here

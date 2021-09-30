@@ -3,7 +3,7 @@
 
 // #define CHIPSET_QUERY_STRING "wmic path Win32_PnPEntity get /format:list | findstr /R /C:\"Chipset\""
 
-namespace HardwareInfo {
+namespace SystemInfo {
 
 	std::vector<FMotherboard::Info> FMotherboard::FetchInfo()
 	{

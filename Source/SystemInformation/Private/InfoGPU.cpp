@@ -1,7 +1,7 @@
 #include "InfoGPU.h"
 #include "SystemCommand.h"
 
-namespace HardwareInfo {
+namespace SystemInfo {
 
     std::vector<FGPU::Info> FGPU::FetchInfo()
     {
@@ -60,7 +60,7 @@ namespace HardwareInfo {
                 gpuInfo.VideoMemoryType = TranslateVideoMemoryType(gpuInfo.VideoMemoryType);
 
                 // convert values
-                gpuInfo.AdapterRAM = HardwareInfo::ConvertBytesToGigabytes(gpuInfo.AdapterRAM);
+                gpuInfo.AdapterRAM = ConvertDataUnits(gpuInfo.AdapterRAM, EDataUnit::Byte);
 
 
                 // information that could be extracted from the 'wmic' command ends here

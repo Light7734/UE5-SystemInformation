@@ -11,21 +11,21 @@
 
 ASystemInformationLogger::ASystemInformationLogger()
 {
-	for (const auto& motherboardInfo : HardwareInfo::FMotherboard::FetchInfo())
+	for (const auto& motherboardInfo : SystemInfo::FMotherboard::FetchInfo())
 		motherboardInfo.LogToUE_LOG();
 
-	for (const auto& osInfo : HardwareInfo::FOperatingSystem::FetchInfo())
+	for (const auto& osInfo : SystemInfo::FOperatingSystem::FetchInfo())
 		osInfo.LogToUE_LOG();
 
-	for (const auto& cpuInfo : HardwareInfo::FCPU::FetchInfo())
+	for (const auto& cpuInfo : SystemInfo::FCPU::FetchInfo())
 		cpuInfo.LogToUE_LOG();
 
-	for (const auto& gpuInfo : HardwareInfo::FGPU::FetchInfo())
+	for (const auto& gpuInfo : SystemInfo::FGPU::FetchInfo())
 		gpuInfo.LogToUE_LOG();
 
-	for (const auto& ramInfo : HardwareInfo::FRAM::FetchInfo())
+	for (const auto& ramInfo : SystemInfo::FRAM::FetchInfo())
 		ramInfo.LogToUE_LOG();
 
-	for (const auto& hardDiskinfo : HardwareInfo::FHardDisk::FetchInfo())
+	for (const auto& hardDiskinfo : SystemInfo::FHardDisk::FetchInfo())
 		hardDiskinfo.LogToUE_LOG();
 }
