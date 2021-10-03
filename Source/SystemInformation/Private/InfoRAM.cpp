@@ -3,18 +3,18 @@
 
 namespace SystemInfo {
 
-	std::vector<FRAM::Info> FRAM::FetchInfo()
+	TArray<FRAM::Info> FRAM::FetchInfo()
 	{
 		// query rams
 		FSystemCommand ramsQuery("wmic path Win32_PhysicalMemory get /format: list");
 		if (ramsQuery.HasFailed())
 		{
-			UE_LOG(LogTemp, Error, TEXT("Failed to query RAMs"));
+			UE_LOG(LogSystemInfo, Error, TEXT("Failed to query RAMs"));
 			return {};
 		}
 
 		// fetch rams info
-		std::vector<Info> ramsInfo;
+		TArray<Info> ramsInfo;
 		Info ramInfo;
 
 		uint32_t index = 1u;
@@ -38,7 +38,7 @@ namespace SystemInfo {
 			TryFetchField(it, "TotalWidth=", ramInfo.TotalWidth);
 			TryFetchField(it, "TypeDetail=", ramInfo.TypeDetail);
 
-			if (it.find("Version") == 0u)
+			if (it.Find("Version") == 0u)
 			{
 				ramInfo.Index = index++;
 
@@ -57,7 +57,7 @@ namespace SystemInfo {
 
 
 				// store current ram info then reset it
-				ramsInfo.push_back(ramInfo);
+				ramsInfo.Push(ramInfo);
 				ramInfo = Info();
 			}
 		}
@@ -65,23 +65,23 @@ namespace SystemInfo {
 		return ramsInfo;
 	}
 
-	void FRAM::TryFetchField(const std::string& iter, const char* fieldName, std::string& outValue)
+	void FRAM::TryFetchField(const FString& iter, const char* fieldName, FString& outValue)
 	{
 		if (outValue != INFO_STR_UNKNOWN)
 			return;
 
-		outValue = iter.find(fieldName) == 0u ? iter.substr(iter.find(fieldName) + std::strlen(fieldName)) : INFO_STR_UNKNOWN;
+		outValue = iter.Find(fieldName) == 0u ? iter.RightChop(iter.Find(fieldName) + std::strlen(fieldName)) : INFO_STR_UNKNOWN;
 
 		if (outValue == "")
 			outValue = INFO_STR_UNKNOWN;
 	}
 
 
-	const char* FRAM::TranslateFormFactor(const std::string& formFactor)
+	const char* FRAM::TranslateFormFactor(const FString& formFactor)
 	{
 		try
 		{
-			switch (std::stoi(formFactor)) {
+			switch (FCString::Atoi(*formFactor)) {
 			case 0: return "Unknown";
 			case 1: return "Other";
 			case 2: return "SIP";
@@ -112,16 +112,16 @@ namespace SystemInfo {
 		catch (std::exception& e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to translate ram form factor: %s"), *FString(formFactor.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate ram form factor: %s"), *formFactor);
 			return "";
 		}
 	}
 
-	const char* FRAM::TranslateSMBIOSMemoryType(const std::string& smbiosMemoryType)
+	const char* FRAM::TranslateSMBIOSMemoryType(const FString& smbiosMemoryType)
 	{
 		try
 		{
-			switch (std::stoi(smbiosMemoryType))
+			switch (FCString::Atoi(*smbiosMemoryType))
 			{
 			case 0: return "Unknown";
 			case 1: return "Other";
@@ -156,17 +156,17 @@ namespace SystemInfo {
 		catch (std::exception& e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to translate smbios memory type: %s"), *FString(smbiosMemoryType.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate smbios memory type: %s"), *smbiosMemoryType);
 			return "";
 		}
 	}
 
 
-	const char* FRAM::TranslateTypeDetail(const std::string& typeDetail)
+	const char* FRAM::TranslateTypeDetail(const FString& typeDetail)
 	{
 		try
 		{
-			switch (std::stoi(typeDetail))
+			switch (FCString::Atoi(*typeDetail))
 			{
 			case 1: return "Reserved";
 			case 2: return "Other";
@@ -187,35 +187,34 @@ namespace SystemInfo {
 		catch (std::exception& e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to translate type detail: %s"), *FString(typeDetail.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate type detail: %s"), *typeDetail);
 			return "";
 		}
 	}
 
 
-	DEFINE_LOG_CATEGORY_STATIC(SystemInfo, Log, All);
 	void FRAM::Info::LogToUE_LOG() const
 	{
-		UE_LOG(SystemInfo, Log, TEXT("RAM #%i {"), Index);
-		UE_LOG(SystemInfo, Log, TEXT("    Capacity = %s"), *FString(Capacity.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    ConfiguredClockSpeed = %s"), *FString(ConfiguredClockSpeed.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    ConfiguredVoltage = %s"), *FString(ConfiguredVoltage.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    DataWidth = %s"), *FString(DataWidth.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    DeviceLocator = %s"), *FString(DeviceLocator.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    FormFactor = %s"), *FString(FormFactor.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    InterleaveDataDepth = %s"), *FString(InterleaveDataDepth.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    InterleavePosition = %s"), *FString(InterleavePosition.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Manufacturer = %s"), *FString(Manufacturer.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    MaxVoltage = %s"), *FString(MaxVoltage.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    MinVoltage = %s"), *FString(MinVoltage.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    PartNumber = %s"), *FString(PartNumber.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    MinVoltage = %s"), *FString(MinVoltage.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    SMBIOSMemoryType = %s"), *FString(SMBIOSMemoryType.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Speed = %s"), *FString(Speed.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Tag = %s"), *FString(Tag.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    TotalWidth = %s"), *FString(TotalWidth.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    TypeDetail = %s"), *FString(TypeDetail.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("}"));
+		UE_LOG(LogSystemInfo, Log, TEXT("RAM #%i {"), Index);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Capacity = %s"), *Capacity);
+		UE_LOG(LogSystemInfo, Log, TEXT("    ConfiguredClockSpeed = %s"), *ConfiguredClockSpeed);
+		UE_LOG(LogSystemInfo, Log, TEXT("    ConfiguredVoltage = %s"), *ConfiguredVoltage);
+		UE_LOG(LogSystemInfo, Log, TEXT("    DataWidth = %s"), *DataWidth);
+		UE_LOG(LogSystemInfo, Log, TEXT("    DeviceLocator = %s"), *DeviceLocator);
+		UE_LOG(LogSystemInfo, Log, TEXT("    FormFactor = %s"), *FormFactor);
+		UE_LOG(LogSystemInfo, Log, TEXT("    InterleaveDataDepth = %s"), *InterleaveDataDepth);
+		UE_LOG(LogSystemInfo, Log, TEXT("    InterleavePosition = %s"), *InterleavePosition);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Manufacturer = %s"), *Manufacturer);
+		UE_LOG(LogSystemInfo, Log, TEXT("    MaxVoltage = %s"), *MaxVoltage);
+		UE_LOG(LogSystemInfo, Log, TEXT("    MinVoltage = %s"), *MinVoltage);
+		UE_LOG(LogSystemInfo, Log, TEXT("    PartNumber = %s"), *PartNumber);
+		UE_LOG(LogSystemInfo, Log, TEXT("    MinVoltage = %s"), *MinVoltage);
+		UE_LOG(LogSystemInfo, Log, TEXT("    SMBIOSMemoryType = %s"), *SMBIOSMemoryType);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Speed = %s"), *Speed);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Tag = %s"), *Tag);
+		UE_LOG(LogSystemInfo, Log, TEXT("    TotalWidth = %s"), *TotalWidth);
+		UE_LOG(LogSystemInfo, Log, TEXT("    TypeDetail = %s"), *TypeDetail);
+		UE_LOG(LogSystemInfo, Log, TEXT("}"));
 	}
 
 }

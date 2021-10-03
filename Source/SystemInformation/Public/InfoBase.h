@@ -1,5 +1,7 @@
 #pragma once
 
+#include "CoreMinimal.h"
+
 #include <string>
 
 #define INFO_STR_UNKNOWN "N/A"
@@ -7,6 +9,7 @@
 
 #define INFO_DECIMAL_POINTS 2.0
 
+DECLARE_LOG_CATEGORY_EXTERN(LogSystemInfo, Log, All)
 
 namespace SystemInfo {
 
@@ -18,12 +21,12 @@ namespace SystemInfo {
 		GigaByte = 1,
 	};
 
-	static const char* ConvertDataUnits(const std::string& value, EDataUnit valueUnit, EDataUnit outUnit = EDataUnit::GigaByte)
+	static const char* ConvertDataUnits(const FString& value, EDataUnit valueUnit, EDataUnit outUnit = EDataUnit::GigaByte)
 	{ 
 		try 
 		{
 			// convert value
-			double valueInt = std::stoull(value);
+			double valueInt = FCString::Atod(*value);
 			double t = (double)valueUnit / (double)outUnit;
 			double outInt = std::floor( (valueInt / t) * std::pow(10.0, INFO_DECIMAL_POINTS) ) / std::pow(10.0, INFO_DECIMAL_POINTS);
 
@@ -46,7 +49,7 @@ namespace SystemInfo {
 		catch(std::exception e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to convert data units: %s "), *FString(value.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to convert data units: %s "), *value);
 			return INFO_STR_UNKNOWN;
 		}
 	}

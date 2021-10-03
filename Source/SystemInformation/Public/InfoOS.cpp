@@ -5,19 +5,19 @@
 
 namespace SystemInfo {
 
-	std::vector<FOperatingSystem::Info> FOperatingSystem::FetchInfo()
+	TArray<FOperatingSystem::Info> FOperatingSystem::FetchInfo()
 	{
 		// query operating-systems
 		FSystemCommand operatingSystemsQuery("wmic path Win32_OperatingSystem get /format:list");
 
 		if (operatingSystemsQuery.HasFailed())
 		{
-			UE_LOG(LogTemp, Error, TEXT("Failed to query operating system"));
+			UE_LOG(LogSystemInfo, Error, TEXT("Failed to query operating system"));
 			return {};
 		}
 
 		// fetch operating-systems info
-		std::vector<Info> operatingSystemsInfo;
+		TArray<Info> operatingSystemsInfo;
 		Info operatingSystemInfo;
 
 		uint32_t index = 1u;
@@ -48,7 +48,7 @@ namespace SystemInfo {
 			TryFetchField(it, "TotalVisibleMemorySize=", operatingSystemInfo.TotalVisibleMemorySize);
 			TryFetchField(it, "Version=", operatingSystemInfo.Version);
 
-			if (it.find("Version=") == 0u)
+			if (it.Find("Version=") == 0u)
 			{
 				operatingSystemInfo.Index = index++;
 				
@@ -72,7 +72,7 @@ namespace SystemInfo {
 
 
 				// store current operating-system info then reset it
-				operatingSystemsInfo.push_back(operatingSystemInfo);
+				operatingSystemsInfo.Push(operatingSystemInfo);
 				operatingSystemInfo = Info();
 			}
 		}
@@ -80,22 +80,22 @@ namespace SystemInfo {
 		return operatingSystemsInfo;
 	}
 
-	void FOperatingSystem::TryFetchField(const std::string& iter, const char* fieldName, std::string& outValue)
+	void FOperatingSystem::TryFetchField(const FString& iter, const char* fieldName, FString& outValue)
 	{
 		if (outValue != INFO_STR_UNKNOWN)
 			return;
 
-		outValue = iter.find(fieldName) == 0u ? iter.substr(std::strlen(fieldName)) : INFO_STR_UNKNOWN;
+		outValue = iter.Find(fieldName) == 0u ? iter.RightChop(std::strlen(fieldName)) : INFO_STR_UNKNOWN;
 
 		if (outValue == "")
 			outValue = INFO_STR_UNKNOWN;
 	}
 
-	const char* FOperatingSystem::TranslateDataExecutionPrevention_SupportPolicy(const std::string& dataExecutionPrevention_SupportPolicy)
+	const char* FOperatingSystem::TranslateDataExecutionPrevention_SupportPolicy(const FString& dataExecutionPrevention_SupportPolicy)
 	{
 		try
 		{
-			switch (std::stoi(dataExecutionPrevention_SupportPolicy))
+			switch (FCString::Atoi(*dataExecutionPrevention_SupportPolicy))
 			{
 			case 0: return "Always Off";
 			case 1: return "Always On";
@@ -107,16 +107,16 @@ namespace SystemInfo {
 		catch (std::exception e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to translate operating system DataExecutionPrevention_SupportPolicy: %s"), *FString(dataExecutionPrevention_SupportPolicy.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate operating system DataExecutionPrevention_SupportPolicy: %s"), *dataExecutionPrevention_SupportPolicy);
 			return "";
 		}
 	}
 
-	const char* FOperatingSystem::TranslateForegroundApplicationBoost(const std::string& foregroundApplicationBoost)
+	const char* FOperatingSystem::TranslateForegroundApplicationBoost(const FString& foregroundApplicationBoost)
 	{
 		try
 		{
-			switch (std::stoi(foregroundApplicationBoost))
+			switch (FCString::Atoi(*foregroundApplicationBoost))
 			{
 			case 0: return "None";
 			case 1: return "Minimum";
@@ -127,16 +127,17 @@ namespace SystemInfo {
 		catch (std::exception e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to translate operating system foreground application boost: %s"), *FString(foregroundApplicationBoost.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate operating system foreground application boost: %s"), *foregroundApplicationBoost);
 			return "";
 		}
 	}
 
-	const char* FOperatingSystem::TranslateProductType(const std::string& productType)
+	const char* FOperatingSystem::TranslateProductType(const FString& productType)
 	{
+		
 		try
 		{
-			switch (std::stoi(productType))
+			switch (FCString::Atoi(*productType))
 			{
 			case 1: return "Work Station";
 			case 2: return "Domain Controller";
@@ -147,39 +148,38 @@ namespace SystemInfo {
 		catch (std::exception e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to translate operating system product type: %s"), *FString(productType.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate operating system product type: %s"), *productType);
 			return "";
 		}
 	}
 
 
-	DEFINE_LOG_CATEGORY_STATIC(SystemInfo, Log, All);
 	void FOperatingSystem::Info::LogToUE_LOG() const
 	{
-		UE_LOG(SystemInfo, Log, TEXT("Operating System #%i {"), Index);
-		UE_LOG(SystemInfo, Log, TEXT("    BuildNumber = %s"), *FString(BuildNumber.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    BuildType = %s"), *FString(BuildType.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    DataExecutionPrevention_32BitApplications = %s"), *FString(DataExecutionPrevention_32BitApplications.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    DataExecutionPrevention_Available = %s"), *FString(DataExecutionPrevention_Available.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    DataExecutionPrevention_Drivers = %s"), *FString(DataExecutionPrevention_Drivers.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    DataExecutionPrevention_SupportPolicy = %s"), *FString(DataExecutionPrevention_SupportPolicy.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Distributed = %s"), *FString(Distributed.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    ForegroundApplicationBoost = %s"), *FString(ForegroundApplicationBoost.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    FreePhysicalMemory = %s"), *FString(FreePhysicalMemory.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    FreeSpaceInPagingFiles = %s"), *FString(FreeSpaceInPagingFiles.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    FreeVirtualMemory = %s"), *FString(FreeVirtualMemory.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Manufacturer = %s"), *FString(Manufacturer.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    MaxNumberOfProcesses = %s"), *FString(MaxNumberOfProcesses.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    MaxProcessMemorySize = %s"), *FString(MaxProcessMemorySize.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    OSArchitecture = %s"), *FString(OSArchitecture.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    PortableOperatingSystem = %s"), *FString(PortableOperatingSystem.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Primary = %s"), *FString(Primary.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    ProductType = %s"), *FString(ProductType.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Status = %s"), *FString(Status.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    TotalVirtualMemorySize = %s"), *FString(TotalVirtualMemorySize.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    TotalVisibleMemorySize = %s"), *FString(TotalVisibleMemorySize.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Version = %s"), *FString(Version.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("}"));
+		UE_LOG(LogSystemInfo, Log, TEXT("Operating System #%i {"), Index);
+		UE_LOG(LogSystemInfo, Log, TEXT("    BuildNumber = %s"), *BuildNumber);
+		UE_LOG(LogSystemInfo, Log, TEXT("    BuildType = %s"), *BuildType);
+		UE_LOG(LogSystemInfo, Log, TEXT("    DataExecutionPrevention_32BitApplications = %s"), *DataExecutionPrevention_32BitApplications);
+		UE_LOG(LogSystemInfo, Log, TEXT("    DataExecutionPrevention_Available = %s"), *DataExecutionPrevention_Available);
+		UE_LOG(LogSystemInfo, Log, TEXT("    DataExecutionPrevention_Drivers = %s"), *DataExecutionPrevention_Drivers);
+		UE_LOG(LogSystemInfo, Log, TEXT("    DataExecutionPrevention_SupportPolicy = %s"), *DataExecutionPrevention_SupportPolicy);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Distributed = %s"), *Distributed);
+		UE_LOG(LogSystemInfo, Log, TEXT("    ForegroundApplicationBoost = %s"), *ForegroundApplicationBoost);
+		UE_LOG(LogSystemInfo, Log, TEXT("    FreePhysicalMemory = %s"), *FreePhysicalMemory);
+		UE_LOG(LogSystemInfo, Log, TEXT("    FreeSpaceInPagingFiles = %s"), *FreeSpaceInPagingFiles);
+		UE_LOG(LogSystemInfo, Log, TEXT("    FreeVirtualMemory = %s"), *FreeVirtualMemory);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Manufacturer = %s"), *Manufacturer);
+		UE_LOG(LogSystemInfo, Log, TEXT("    MaxNumberOfProcesses = %s"), *MaxNumberOfProcesses);
+		UE_LOG(LogSystemInfo, Log, TEXT("    MaxProcessMemorySize = %s"), *MaxProcessMemorySize);
+		UE_LOG(LogSystemInfo, Log, TEXT("    OSArchitecture = %s"), *OSArchitecture);
+		UE_LOG(LogSystemInfo, Log, TEXT("    PortableOperatingSystem = %s"), *PortableOperatingSystem);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Primary = %s"), *Primary);
+		UE_LOG(LogSystemInfo, Log, TEXT("    ProductType = %s"), *ProductType);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Status = %s"), *Status);
+		UE_LOG(LogSystemInfo, Log, TEXT("    TotalVirtualMemorySize = %s"), *TotalVirtualMemorySize);
+		UE_LOG(LogSystemInfo, Log, TEXT("    TotalVisibleMemorySize = %s"), *TotalVisibleMemorySize);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Version = %s"), *Version);
+		UE_LOG(LogSystemInfo, Log, TEXT("}"));
 	}
 
 }

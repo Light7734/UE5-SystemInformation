@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "SystemInformation",
+	"Description": "Gathers Information about Hardware and Software",
+	"Category": "Other",
+	"CreatedBy": "Light3039",
+	"CreatedByURL": "https://github.com/light3039",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "SystemInformation",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}

@@ -13,7 +13,7 @@ FSystemCommand::FSystemCommand(const char* command)
 	}
 
 	while (fgets(&path[0], 1024, fp))
-		Result.push_back(path.substr(0, path.find("\r\n")));
+		Result.Push(FString(path.substr(0, path.find("\r\n")).c_str()));
 
 	bFailed = !!_pclose(fp);
 }

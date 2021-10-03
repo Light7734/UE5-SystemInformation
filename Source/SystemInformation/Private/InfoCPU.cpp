@@ -1,21 +1,24 @@
 #include "InfoCPU.h"
 #include "SystemCommand.h"
 
+
 namespace SystemInfo {
 
-	std::vector<FCPU::Info> FCPU::FetchInfo()
+	DEFINE_LOG_CATEGORY_STATIC(LogSystemInfo, Log, All);
+
+	TArray<FCPU::Info> FCPU::FetchInfo()
 	{
 		// query cpus
 		FSystemCommand cpusQuery("wmic path Win32_Processor get /format: list");
 
 		if (cpusQuery.HasFailed())
 		{
-			UE_LOG(LogTemp, Error, TEXT("Failed to query CPUs"));
+			UE_LOG(LogSystemInfo, Error, TEXT("Failed to query CPUs"));
 			return {};
 		}
 
 		// fetch cpus info
-		std::vector<Info> cpusInfo;
+		TArray<Info> cpusInfo;
 		Info cpuInfo;
 
 		uint32_t index = 1u;
@@ -47,7 +50,7 @@ namespace SystemInfo {
 
 			TryFetchField(it, "ThreadCount=", cpuInfo.ThreadCount);
 
-			if (it.find("Version=") == 0u)
+			if (it.Find("Version=") == 0u)
 			{
 				cpuInfo.Index = index++;
 
@@ -66,7 +69,7 @@ namespace SystemInfo {
 
 
 				// store current cpu info then reset it
-				cpusInfo.push_back(cpuInfo);
+				cpusInfo.Push(cpuInfo);
 				cpuInfo = Info();
 			}
 		}
@@ -74,23 +77,23 @@ namespace SystemInfo {
 		return cpusInfo;
 	}
 
-	void FCPU::TryFetchField(const std::string& iter, const char* fieldName, std::string& outValue)
+	void FCPU::TryFetchField(const FString& iter, const char* fieldName, FString& outValue)
 	{
 		if (outValue != INFO_STR_UNKNOWN)
 			return;
 
-		outValue = iter.find(fieldName) == 0u ? iter.substr(iter.find(fieldName) + std::strlen(fieldName)) : INFO_STR_UNKNOWN;
+		outValue = iter.Find(fieldName) == 0u ? iter.RightChop(iter.Find(fieldName) + std::strlen(fieldName)) : INFO_STR_UNKNOWN;
 
 		if (outValue == "")
 			outValue = INFO_STR_UNKNOWN;
 	}
 
 
-	const char* FCPU::TranslateArchitecture(const std::string& architecture)
+	const char* FCPU::TranslateArchitecture(const FString& architecture)
 	{
 		try
 		{
-			switch (std::stoi(architecture))
+			switch (FCString::Atoi(*architecture))
 			{
 			case 0: return "x86";
 			case 1: return "MIPS";
@@ -105,16 +108,16 @@ namespace SystemInfo {
 		catch (std::exception e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to translate cpu architecture: %s"), *FString(architecture.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate cpu architecture: %s"), *architecture);
 			return "";
 		}
 	}
 
-	const char* FCPU::TranslateAvailability(const std::string& availability)
+	const char* FCPU::TranslateAvailability(const FString& availability)
 	{
 		try
 		{
-			switch (std::stoi(availability))
+			switch (FCString::Atoi(*availability))
 			{
 			case 1: return "Other";
 			case 2: return "Unknown";
@@ -143,17 +146,17 @@ namespace SystemInfo {
 		catch (std::exception e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to translate cpu availability: %s"), *FString(availability.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate cpu availability: %s"), *availability);
 			return "";
 		}
 	}
 
 
-	const char* FCPU::TranslateFamiliy(const std::string& family)
+	const char* FCPU::TranslateFamiliy(const FString& family)
 	{
 		try
 		{
-			switch (std::stoi(family))
+			switch (FCString::Atoi(*family))
 			{
 			case 1: return "Other";
 			case 2: return "Unknown";
@@ -350,39 +353,38 @@ namespace SystemInfo {
 		catch (std::exception e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to translate cpu family: %s"), *FString(family.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate cpu family: %s"), *family);
 			return "";
 		}
 	}
 
-	DEFINE_LOG_CATEGORY_STATIC(SystemInfo, Log, All);
 	void FCPU::Info::LogToUE_LOG() const
 	{
-		UE_LOG(SystemInfo, Log, TEXT("CPU #%i {"), Index);
-		UE_LOG(SystemInfo, Log, TEXT("    Architecture = %s"), *FString(Architecture.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Availability = %s"), *FString(Availability.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Caption = %s"), *FString(Caption.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Characteristics = %s"), *FString(Characteristics.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    CpuStatus = %s"), *FString(CpuStatus.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    CurrentClockSpeed = %s"), *FString(CurrentClockSpeed.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    CurrentVoltage = %s"), *FString(CurrentVoltage.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Description = %s"), *FString(Description.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    DeviceID = %s"), *FString(DeviceID.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    ExtClock = %s"), *FString(ExtClock.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Family = %s"), *FString(Family.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    L2CacheSize = %s"), *FString(L2CacheSize.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    L3CacheSize = %s"), *FString(L3CacheSize.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    LoadPercentage = %s"), *FString(LoadPercentage.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Manufacturer = %s"), *FString(Manufacturer.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    MaxClockSpeed = %s"), *FString(MaxClockSpeed.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    NumberOfCores = %s"), *FString(NumberOfCores.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    NumberOfEnabledCore = %s"), *FString(NumberOfEnabledCore.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    NumberOfLogicalProcessors = %s"), *FString(NumberOfLogicalProcessors.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    SecondLevelAddressTranslationExtensions = %s"), *FString(SecondLevelAddressTranslationExtensions.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    SocketDesignation = %s"), *FString(SocketDesignation.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Status = %s"), *FString(Status.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    ThreadCount = %s"), *FString(ThreadCount.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("}"));
+		UE_LOG(LogSystemInfo, Log, TEXT("CPU #%i {"), Index);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Architecture = %s"), *Architecture);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Availability = %s"), *Availability);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Caption = %s"), *Caption);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Characteristics = %s"), *Characteristics);
+		UE_LOG(LogSystemInfo, Log, TEXT("    CpuStatus = %s"), *CpuStatus);
+		UE_LOG(LogSystemInfo, Log, TEXT("    CurrentClockSpeed = %s"), *CurrentClockSpeed);
+		UE_LOG(LogSystemInfo, Log, TEXT("    CurrentVoltage = %s"), *CurrentVoltage);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Description = %s"), *Description);
+		UE_LOG(LogSystemInfo, Log, TEXT("    DeviceID = %s"), *DeviceID);
+		UE_LOG(LogSystemInfo, Log, TEXT("    ExtClock = %s"), *ExtClock);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Family = %s"), *Family);
+		UE_LOG(LogSystemInfo, Log, TEXT("    L2CacheSize = %s"), *L2CacheSize);
+		UE_LOG(LogSystemInfo, Log, TEXT("    L3CacheSize = %s"), *L3CacheSize);
+		UE_LOG(LogSystemInfo, Log, TEXT("    LoadPercentage = %s"), *LoadPercentage);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Manufacturer = %s"), *Manufacturer);
+		UE_LOG(LogSystemInfo, Log, TEXT("    MaxClockSpeed = %s"),	*MaxClockSpeed);
+		UE_LOG(LogSystemInfo, Log, TEXT("    NumberOfCores = %s"), *NumberOfCores);
+		UE_LOG(LogSystemInfo, Log, TEXT("    NumberOfEnabledCore = %s"), *NumberOfEnabledCore);
+		UE_LOG(LogSystemInfo, Log, TEXT("    NumberOfLogicalProcessors = %s"), *NumberOfLogicalProcessors);
+		UE_LOG(LogSystemInfo, Log, TEXT("    SecondLevelAddressTranslationExtensions = %s"), *SecondLevelAddressTranslationExtensions);
+		UE_LOG(LogSystemInfo, Log, TEXT("    SocketDesignation = %s"), *SocketDesignation);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Status = %s"), *Status);
+		UE_LOG(LogSystemInfo, Log, TEXT("    ThreadCount = %s"), *ThreadCount);
+		UE_LOG(LogSystemInfo, Log, TEXT("}"));
 	}
 
 }

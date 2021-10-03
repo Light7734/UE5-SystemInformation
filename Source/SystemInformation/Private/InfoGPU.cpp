@@ -1,9 +1,11 @@
 #include "InfoGPU.h"
 #include "SystemCommand.h"
 
+#include <Logging/LogMacros.h>
+
 namespace SystemInfo {
 
-    std::vector<FGPU::Info> FGPU::FetchInfo()
+    TArray<FGPU::Info> FGPU::FetchInfo()
     {
         // query gpus
         FSystemCommand gpusQuery("wmic path Win32_VideoController get /format: list");
@@ -15,7 +17,7 @@ namespace SystemInfo {
         }
 
         // fetch gpus info
-        std::vector<Info> gpusInfo;
+        TArray<Info> gpusInfo;
         Info gpuInfo;
         uint32_t index = 1u;
 
@@ -49,7 +51,7 @@ namespace SystemInfo {
             TryFetchField(it, "VideoModeDescription=", gpuInfo.VideoModeDescription);
             TryFetchField(it, "VideoProcessor=", gpuInfo.VideoProcessor);
 
-            if (it.find("VideoProcessor=") == 0u)
+            if (it.Find("VideoProcessor=") == 0u)
             {
                 gpuInfo.Index = index;
 
@@ -69,7 +71,7 @@ namespace SystemInfo {
 
 
                 // store current gpu info then reset it
-                gpusInfo.push_back(gpuInfo);
+                gpusInfo.Push(gpuInfo);
                 gpuInfo = Info();
             }
         }
@@ -78,23 +80,22 @@ namespace SystemInfo {
         return gpusInfo;
     }
 
-	void FGPU::TryFetchField(const std::string& iter, const char* fieldName, std::string& outValue)
+	void FGPU::TryFetchField(const FString& iter, const char* fieldName, FString& outValue)
 	{
 		if (outValue != INFO_STR_UNKNOWN)
 			return;
 
-		outValue = iter.find(fieldName) == 0u ? iter.substr(std::strlen(fieldName)) : INFO_STR_UNKNOWN;
+		outValue = iter.Find(fieldName) == 0u ? iter.RightChop(std::strlen(fieldName)) : INFO_STR_UNKNOWN;
 
 		if (outValue == "")
 			outValue = INFO_STR_UNKNOWN;
 	}
 
-
-    const char* FGPU::TranslateAvailability(const std::string& availability)
+    const char* FGPU::TranslateAvailability(const FString& availability)
     {
         try
         {
-            switch (std::stoi(availability))
+            switch (FCString::Atoi(*availability))
             {
             case 1: return "Other";
             case 2: return "Unknown";
@@ -123,16 +124,16 @@ namespace SystemInfo {
         catch (std::exception e)
         {
             (void)e;
-            UE_LOG(LogTemp, Error, TEXT("Failed to translate gpu availability: %s"), *FString(availability.c_str()));
+            UE_LOG(LogTemp, Error, TEXT("Failed to translate gpu availability: %s"), *availability);
 			return "";
 		}
     }
 
-    const char* FGPU::TranslateCurrentScanMode(const std::string& currentScanMode)
+    const char* FGPU::TranslateCurrentScanMode(const FString& currentScanMode)
     {
         try
         {
-            switch (std::stoi(currentScanMode))
+            switch (FCString::Atoi(*currentScanMode))
             {
             case 1: return "Other";
             case 2: return "Unknown";
@@ -144,17 +145,17 @@ namespace SystemInfo {
         catch (std::exception e)
         {
             (void)e;
-            UE_LOG(LogTemp, Error, TEXT("Failed to translate gpu current scan mode: %s"), *FString(currentScanMode.c_str()));
+            UE_LOG(LogTemp, Error, TEXT("Failed to translate gpu current scan mode: %s"), *currentScanMode);
 			return "";
 		}
     }
 
-    const char* FGPU::TranslateVideoArchitecture(const std::string& videoArchitecture)
+    const char* FGPU::TranslateVideoArchitecture(const FString& videoArchitecture)
     {
         try
         {
 
-            switch (std::stoi(videoArchitecture))
+            switch (FCString::Atoi(*videoArchitecture))
             {
             case 1: return "Other";
             case 2: return "Unknown";
@@ -175,16 +176,16 @@ namespace SystemInfo {
         catch (std::exception e)
         {
             (void)e;
-            UE_LOG(LogTemp, Error, TEXT("Failed to translate gpu video architecture: %s"), *FString(videoArchitecture.c_str()));
+            UE_LOG(LogTemp, Error, TEXT("Failed to translate gpu video architecture: %s"), *videoArchitecture);
 			return "";
 		}
     }
 
-    const char* FGPU::TranslateVideoMemoryType(const std::string& videoMemoryType)
+    const char* FGPU::TranslateVideoMemoryType(const FString& videoMemoryType)
     {
         try
         {
-            switch (std::stoi(videoMemoryType))
+            switch (FCString::Atoi(*videoMemoryType))
             {
             case 1: return "Other";
             case 2: return "Unknown";
@@ -205,7 +206,7 @@ namespace SystemInfo {
 		catch (std::exception e)
 		{
 			(void)e;
-			UE_LOG(LogTemp, Error, TEXT("Failed to translate gpu video memory type: %s"), *FString(videoMemoryType.c_str()));
+			UE_LOG(LogTemp, Error, TEXT("Failed to translate gpu video memory type: %s"), *videoMemoryType);
 			return "";
 		}
     }
@@ -214,33 +215,33 @@ namespace SystemInfo {
     void FGPU::Info::LogToUE_LOG() const
     {
         UE_LOG(SystemInfo, Log, TEXT("GPU #%i {"), Index);
-        UE_LOG(SystemInfo, Log, TEXT("    AdapterCompatibility = %s"), *FString(AdapterCompatibility.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    AdapterDACType = %s"), *FString(AdapterDACType.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    AdapterRAM = %s"), *FString(AdapterRAM.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    Availability = %s"), *FString(Availability.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    Caption = %s"), *FString(Caption.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    CurrentBitsPerPixel = %s"), *FString(CurrentBitsPerPixel.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    CurrentHorizontalResolution = %s"), *FString(CurrentHorizontalResolution.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    CurrentNumberOfColors = %s"), *FString(CurrentNumberOfColors.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    CurrentRefreshRate = %s"), *FString(CurrentRefreshRate.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    CurrentScanMode = %s"), *FString(CurrentScanMode.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    CurrentVerticalResolution = %s"), *FString(CurrentVerticalResolution.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    Description = %s"), *FString(Description.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    DeviceID = %s"), *FString(DeviceID.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    DriverDate = %s"), *FString(DriverDate.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    DriverVersion = %s"), *FString(DriverVersion.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    InfFilename = %s"), *FString(InfFilename.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    InfSection = %s"), *FString(InfSection.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    InstalledDisplayDrivers = %s"), *FString(InstalledDisplayDrivers.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    MaxRefreshRate = %s"), *FString(MaxRefreshRate.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    MinRefreshRate = %s"), *FString(MinRefreshRate.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    Monochrome = %s"), *FString(Monochrome.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    Name = %s"), *FString(Name.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    Status = %s"), *FString(Status.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    VideoArchitecture = %s"), *FString(VideoArchitecture.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    VideoMemoryType = %s"), *FString(VideoMemoryType.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    VideoModeDescription = %s"), *FString(VideoModeDescription.c_str()));
-        UE_LOG(SystemInfo, Log, TEXT("    VideoProcessor = %s"), *FString(VideoProcessor.c_str()));
+        UE_LOG(SystemInfo, Log, TEXT("    AdapterCompatibility = %s"),*AdapterCompatibility);
+        UE_LOG(SystemInfo, Log, TEXT("    AdapterDACType = %s"), *AdapterDACType);
+        UE_LOG(SystemInfo, Log, TEXT("    AdapterRAM = %s"), *AdapterRAM);
+        UE_LOG(SystemInfo, Log, TEXT("    Availability = %s"), *Availability);
+        UE_LOG(SystemInfo, Log, TEXT("    Caption = %s"), *Caption);
+        UE_LOG(SystemInfo, Log, TEXT("    CurrentBitsPerPixel = %s"), *CurrentBitsPerPixel);
+        UE_LOG(SystemInfo, Log, TEXT("    CurrentHorizontalResolution = %s"), *CurrentHorizontalResolution);
+        UE_LOG(SystemInfo, Log, TEXT("    CurrentNumberOfColors = %s"), *CurrentNumberOfColors);
+        UE_LOG(SystemInfo, Log, TEXT("    CurrentRefreshRate = %s"), *CurrentRefreshRate);
+        UE_LOG(SystemInfo, Log, TEXT("    CurrentScanMode = %s"), *CurrentScanMode);
+        UE_LOG(SystemInfo, Log, TEXT("    CurrentVerticalResolution = %s"), *CurrentVerticalResolution);
+        UE_LOG(SystemInfo, Log, TEXT("    Description = %s"), *Description);
+        UE_LOG(SystemInfo, Log, TEXT("    DeviceID = %s"), *DeviceID);
+        UE_LOG(SystemInfo, Log, TEXT("    DriverDate = %s"), *DriverDate);
+        UE_LOG(SystemInfo, Log, TEXT("    DriverVersion = %s"), *DriverVersion);
+        UE_LOG(SystemInfo, Log, TEXT("    InfFilename = %s"), *InfFilename);
+        UE_LOG(SystemInfo, Log, TEXT("    InfSection = %s"), *InfSection);
+        UE_LOG(SystemInfo, Log, TEXT("    InstalledDisplayDrivers = %s"), *InstalledDisplayDrivers);
+        UE_LOG(SystemInfo, Log, TEXT("    MaxRefreshRate = %s"), *MaxRefreshRate);
+        UE_LOG(SystemInfo, Log, TEXT("    MinRefreshRate = %s"), *MinRefreshRate);
+		UE_LOG(SystemInfo, Log, TEXT("    Monochrome = %s"), *Monochrome);
+        UE_LOG(SystemInfo, Log, TEXT("    Name = %s"), *Name);
+        UE_LOG(SystemInfo, Log, TEXT("    Status = %s"), *Status);
+        UE_LOG(SystemInfo, Log, TEXT("    VideoArchitecture = %s"), *VideoArchitecture);
+        UE_LOG(SystemInfo, Log, TEXT("    VideoMemoryType = %s"), *VideoMemoryType);
+        UE_LOG(SystemInfo, Log, TEXT("    VideoModeDescription = %s"), *VideoModeDescription);
+        UE_LOG(SystemInfo, Log, TEXT("    VideoProcessor = %s"), *VideoProcessor);
         UE_LOG(SystemInfo, Log, TEXT("}"));
     }
 

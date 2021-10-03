@@ -1,23 +1,21 @@
 #include "InfoMotherboard.h"
 #include "SystemCommand.h"
 
-// #define CHIPSET_QUERY_STRING "wmic path Win32_PnPEntity get /format:list | findstr /R /C:\"Chipset\""
-
 namespace SystemInfo {
 
-	std::vector<FMotherboard::Info> FMotherboard::FetchInfo()
+	TArray<FMotherboard::Info> FMotherboard::FetchInfo()
 	{
 		// query motherboards
 		FSystemCommand motherboardsQuery("wmic path Win32_BaseBoard get /format: list");
 
 		if (motherboardsQuery.HasFailed())
 		{
-			UE_LOG(LogTemp, Error, TEXT("Failed to quety motherboard(s)"));
+			UE_LOG(LogSystemInfo, Error, TEXT("Failed to quety motherboard(s)"));
 			return {};
 		}
 
 		// fetch motherboards info
-		std::vector<Info> motherboardsInfo;
+		TArray<Info> motherboardsInfo;
 		Info motherboardInfo;
 
 		uint32_t index = 1u;
@@ -28,7 +26,7 @@ namespace SystemInfo {
 			TryFetchField(it, "Status=", motherboardInfo.Status);
 			TryFetchField(it, "Version=", motherboardInfo.Version);
 
-			if (it.find("Version=") == 0u)
+			if (it.Find("Version=") == 0u)
 			{
 				motherboardInfo.Index = index++;
 
@@ -39,7 +37,7 @@ namespace SystemInfo {
 
 
 				// store current motherboard info then reset it
-				motherboardsInfo.push_back(motherboardInfo);
+				motherboardsInfo.Push(motherboardInfo);
 				motherboardInfo = Info();
 			}
 		}
@@ -47,27 +45,26 @@ namespace SystemInfo {
 		return motherboardsInfo;
 	}
 
-	void FMotherboard::TryFetchField(const std::string& iter, const char* fieldName, std::string& outValue)
+	void FMotherboard::TryFetchField(const FString& iter, const char* fieldName, FString& outValue)
 	{
 		if (outValue != INFO_STR_UNKNOWN)
 			return;
 
-		outValue = iter.find(fieldName) == 0u ? iter.substr(iter.find(fieldName) + std::strlen(fieldName)) : INFO_STR_UNKNOWN;
+		outValue = iter.Find(fieldName) == 0u ? iter.RightChop(iter.Find(fieldName) + std::strlen(fieldName)) : INFO_STR_UNKNOWN;
 
 		if (outValue == "")
 			outValue = INFO_STR_UNKNOWN;
 	}
 
 
-	DEFINE_LOG_CATEGORY_STATIC(SystemInfo, Log, All);
 	void FMotherboard::Info::LogToUE_LOG() const
 	{
-		UE_LOG(SystemInfo, Log, TEXT("Motherboard #%i {"), Index);
-		UE_LOG(SystemInfo, Log, TEXT("    Manufacturer = %s"), *FString(Manufacturer.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Product = %s"), *FString(Product.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Status = %s"), *FString(Status.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("    Version = %s"), *FString(Version.c_str()));
-		UE_LOG(SystemInfo, Log, TEXT("}"));
+		UE_LOG(LogSystemInfo, Log, TEXT("Motherboard #%i {"), Index);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Manufacturer = %s"), *Manufacturer);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Product = %s"), *Product);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Status = %s"), *Status);
+		UE_LOG(LogSystemInfo, Log, TEXT("    Version = %s"), *Version);
+		UE_LOG(LogSystemInfo, Log, TEXT("}"));
 	}
 
 }
