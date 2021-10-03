@@ -1,5 +1,5 @@
 # UE5-SystemInformation
-A system information collector module for unreal engine
+A system information collector plugin for unreal engine
 
 ## Supported Platforms
 * Windows
@@ -16,14 +16,15 @@ A system information collector module for unreal engine
 * Linux support
 * Temperature Info
 * More details about each hardware
+* XML output
 
 ## Getting Started
-1. *Run* `git clone https://github.com/light3039/ue5-systeminformation <YOUR_PROJECT_PATH/Source>`
-2. Add `"SystemInformation"` to [PROJECT_NAME].Build.cs `PublicDependencyModuleNames.AddRange...`
-3. Add `"SystemInformation"` to [PROJECT_NAME].Target.cs `ExtraModuleNames.AddRange...`
-4. Add `{ Name": "SystemInformation", "Type": "Runtime" }` to [PROJECT_NAME].uproject's Module section
-5. Restart the Unreal Editor
-6. Tools -> Refresh Visual Studio Project
+ 
+1. `git clone https://github.com/light3039/ue5-systeminformation <PROJECT_DIR>/Plugins/SystemInformation`
+2. Add `"SystemInformation"` to <MODULE_NAME>.Build.cs `PublicDependencyModuleNames.AddRange...`
+3. Add `"SystemInformation"` to <PROJECT_NAME>.Target.cs `ExtraModuleNames.AddRange...`
+4. Compile and Restart the Unreal Editor
+5. Tools -> Refresh Visual Studio Project
 
 ### Sample output:
 ```
