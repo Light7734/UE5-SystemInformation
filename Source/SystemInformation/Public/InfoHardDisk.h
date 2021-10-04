@@ -4,42 +4,74 @@
 
 #include "InfoBase.h"
 
-namespace SystemInfo {
+#include "InfoHardDisk.generated.h"
+
+USTRUCT()
+struct SYSTEMINFORMATION_API FHardDiskInformation
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FString BytesPerSector = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	TArray<FString> Capabilities;
+
+	UPROPERTY()
+	FString Caption = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString FirmwareRevision = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString InterfaceType = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString Manufacturer = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString MediaType = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString Model = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString SectorsPerTrack = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString SerialNumber = INFO_STR_UNKNOWN;
 	
-	class SYSTEMINFORMATION_API FHardDisk
-	{
-	public:
-		struct SYSTEMINFORMATION_API Info
-		{
-			FString BytesPerSector = INFO_STR_UNKNOWN;
-			TArray<FString> Capabilities;
-			FString Caption = INFO_STR_UNKNOWN;
-			FString FirmwareRevision = INFO_STR_UNKNOWN;
-			FString InterfaceType = INFO_STR_UNKNOWN;
-			FString Manufacturer = INFO_STR_UNKNOWN;
-			FString MediaType = INFO_STR_UNKNOWN;
-			FString Model = INFO_STR_UNKNOWN;
-			FString SectorsPerTrack = INFO_STR_UNKNOWN;
-			FString SerialNumber = INFO_STR_UNKNOWN;
-			FString Size = INFO_STR_UNKNOWN;
-			FString TotalCylinders = INFO_STR_UNKNOWN;
-			FString TotalHeads = INFO_STR_UNKNOWN;
-			FString TotalSectors = INFO_STR_UNKNOWN;
-			FString TotalTracks = INFO_STR_UNKNOWN;
-			FString TracksPerCylinder = INFO_STR_UNKNOWN;
+	UPROPERTY()
+	FString Size = INFO_STR_UNKNOWN;
 
-			uint32_t Index;
+	UPROPERTY()
+	FString TotalCylinders = INFO_STR_UNKNOWN;
 
-			void LogToUE_LOG() const;
-		};
+	UPROPERTY()
+	FString TotalHeads = INFO_STR_UNKNOWN;
 
-	public:
-		static TArray<Info> FetchInfo();
+	UPROPERTY()
+	FString TotalSectors = INFO_STR_UNKNOWN;
 
-	private:
-		static void TryFetchField(const FString& iter, const char* fieldName, FString& outValue);
-		static void TryFetchArrayField(const FString& iter, const char* fieldName, TArray<FString>& outValue);
+	UPROPERTY()
+	FString TotalTracks = INFO_STR_UNKNOWN;
 
-	};
+	UPROPERTY()
+	FString TracksPerCylinder = INFO_STR_UNKNOWN;
 
-}
+	UPROPERTY()
+	int32 Index;
+
+	void LogToUE_LOG() const;
+};
+
+class SYSTEMINFORMATION_API FHardDiskInformationFetcher
+{
+public:
+	static TArray<FHardDiskInformation> FetchInfo();
+
+private:
+	static void TryFetchField(const FString& iter, const char* fieldName, FString& outValue);
+	static void TryFetchArrayField(const FString& iter, const char* fieldName, TArray<FString>& outValue);
+
+};

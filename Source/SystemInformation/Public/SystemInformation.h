@@ -20,29 +20,28 @@ private:
 public:
 	FSystemInformation() = delete;
 
-	static inline const TArray<SystemInfo::FMotherboard::Info>& GetMotherboardsInfo() { return m_MotherboardsInfo; }
-	static inline const TArray<SystemInfo::FOperatingSystem::Info>& GetOperatingSystemsInfo() { return m_OperatingSystemsInfo; }
-	static inline const TArray<SystemInfo::FCPU::Info>& GetCPUsInfo() { return m_CPUsInfo; }
-	static inline const TArray<SystemInfo::FGPU::Info>& GetGPUsInfo() { return m_GPUsInfo; }
-	static inline const TArray<SystemInfo::FRAM::Info>& GetRAMsInfo() { return m_RAMsInfo; }
-	static inline const TArray<SystemInfo::FHardDisk::Info>& GetHardDisksInfo() { return m_HardDisksInfo; }
+	static inline const TArray<FMotherboardInformation>& GetMotherboardsInfo() { return m_MotherboardsInfo; }
+	static inline const TArray<FOperatingSystemInformation>& GetOperatingSystemsInfo() { return m_OperatingSystemsInfo; }
+	static inline const TArray<FCPUInformation>& GetCPUsInfo() { return m_CPUsInfo; }
+	static inline const TArray<FGPUInformation>& GetGPUsInfo() { return m_GPUsInfo; }
+	static inline const TArray<FRAMInformation>& GetRAMsInfo() { return m_RAMsInfo; }
+	static inline const TArray<FHardDiskInformation>& GetHardDisksInfo() { return m_HardDisksInfo; }
 
 private:
 	static void FetchInfo();
 
 private:
-	static TArray<SystemInfo::FMotherboard::Info> m_MotherboardsInfo;
-	static TArray<SystemInfo::FOperatingSystem::Info> m_OperatingSystemsInfo;
-	static TArray<SystemInfo::FCPU::Info> m_CPUsInfo;
-	static TArray<SystemInfo::FGPU::Info> m_GPUsInfo;
-	static TArray<SystemInfo::FRAM::Info> m_RAMsInfo;
-	static TArray<SystemInfo::FHardDisk::Info> m_HardDisksInfo;
+	static TArray<FMotherboardInformation> m_MotherboardsInfo;
+	static TArray<FOperatingSystemInformation> m_OperatingSystemsInfo;
+	static TArray<FCPUInformation> m_CPUsInfo;
+	static TArray<FGPUInformation> m_GPUsInfo;
+	static TArray<FRAMInformation> m_RAMsInfo;
+	static TArray<FHardDiskInformation> m_HardDisksInfo;
 };
 
 class FSystemInformationModule : public IModuleInterface
 {
 public:
-
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;

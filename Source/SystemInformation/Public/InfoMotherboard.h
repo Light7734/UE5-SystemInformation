@@ -4,28 +4,38 @@
 
 #include "InfoBase.h"
 
-namespace SystemInfo {
+#include "InfoMotherboard.generated.h"
 
-	class SYSTEMINFORMATION_API FMotherboard
-	{
-	public:
-		struct SYSTEMINFORMATION_API Info
-		{
-			FString Manufacturer = INFO_STR_UNKNOWN;
-			FString Product = INFO_STR_UNKNOWN;
-			FString Status = INFO_STR_UNKNOWN;
-			FString Version = INFO_STR_UNKNOWN;
+USTRUCT()
+struct SYSTEMINFORMATION_API FMotherboardInformation
+{
+	GENERATED_BODY()
 
-			uint8_t Index = 0u;
+	UPROPERTY()
+	FString Manufacturer = INFO_STR_UNKNOWN;
 
-			void LogToUE_LOG() const;
-		};
+	UPROPERTY()
+	FString Product = INFO_STR_UNKNOWN;
 
-	public:
-		static TArray<Info> FetchInfo();
+	UPROPERTY()
+	FString Status = INFO_STR_UNKNOWN;
 
-	private:
-		static void TryFetchField(const FString& iter, const char* fieldName, FString& outValue);
-	};
+	UPROPERTY()
+	FString Version = INFO_STR_UNKNOWN;
 
-}
+	UPROPERTY()
+	uint8 Index = 0u;
+
+	void LogToUE_LOG() const;
+};
+
+
+class SYSTEMINFORMATION_API FMotherboardInformationFetcher
+{
+public:
+	static TArray<FMotherboardInformation> FetchInfo();
+
+private:
+	static void TryFetchField(const FString& iter, const char* fieldName, FString& outValue);
+};
+

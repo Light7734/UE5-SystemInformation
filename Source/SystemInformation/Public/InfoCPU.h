@@ -4,51 +4,100 @@
 
 #include "InfoBase.h"
 
-namespace SystemInfo {
+#include "InfoCPU.generated.h"
 
-    class SYSTEMINFORMATION_API FCPU
-    {
-    public:
-		struct SYSTEMINFORMATION_API Info
-		{
-			FString Architecture = INFO_STR_UNKNOWN;
-			FString Availability = INFO_STR_UNKNOWN;
-			FString Caption = INFO_STR_UNKNOWN;
-			FString Characteristics = INFO_STR_UNKNOWN;
-			FString CpuStatus = INFO_STR_UNKNOWN;
-			FString CurrentClockSpeed = INFO_STR_UNKNOWN;
-			FString CurrentVoltage = INFO_STR_UNKNOWN;
-			FString Description = INFO_STR_UNKNOWN;
-			FString DeviceID = INFO_STR_UNKNOWN;
-			FString ExtClock = INFO_STR_UNKNOWN;
-			FString Family = INFO_STR_UNKNOWN;
-			FString L2CacheSize = INFO_STR_UNKNOWN;
-			FString L3CacheSize = INFO_STR_UNKNOWN;
-			FString LoadPercentage = INFO_STR_UNKNOWN;
-			FString Manufacturer = INFO_STR_UNKNOWN;
-			FString MaxClockSpeed = INFO_STR_UNKNOWN;
-			FString Name = INFO_STR_UNKNOWN;
-			FString NumberOfCores = INFO_STR_UNKNOWN;
-			FString NumberOfEnabledCore = INFO_STR_UNKNOWN;
-			FString NumberOfLogicalProcessors = INFO_STR_UNKNOWN;
-			FString SecondLevelAddressTranslationExtensions = INFO_STR_UNKNOWN;
-			FString SocketDesignation = INFO_STR_UNKNOWN;
-			FString Status = INFO_STR_UNKNOWN;
-			FString ThreadCount = INFO_STR_UNKNOWN;
-			uint32_t Index;
+USTRUCT()
+struct SYSTEMINFORMATION_API FCPUInformation
+{
+	GENERATED_BODY()
 
-			void LogToUE_LOG() const;
-		};
+	UPROPERTY()
+	FString Architecture = INFO_STR_UNKNOWN;
 
-    public:
-		static TArray<Info> FetchInfo();
+	UPROPERTY()
+	FString Availability = INFO_STR_UNKNOWN;
 
-    private:
-		static void TryFetchField(const FString& iter, const char* fieldName, FString& outValue);
+	UPROPERTY()
+	FString Caption = INFO_STR_UNKNOWN;
 
-		static const char* TranslateArchitecture(const FString& architecture);
-		static const char* TranslateAvailability(const FString& availability);
-		static const char* TranslateFamiliy(const FString& family);
-    };
+	UPROPERTY()
+	FString Characteristics = INFO_STR_UNKNOWN;
 
-}
+	UPROPERTY()
+	FString CpuStatus = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString CurrentClockSpeed = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString CurrentVoltage = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString Description = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString DeviceID = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString ExtClock = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString Family = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString L2CacheSize = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString L3CacheSize = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString LoadPercentage = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString Manufacturer = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString MaxClockSpeed = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString Name = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString NumberOfCores = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString NumberOfEnabledCore = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString NumberOfLogicalProcessors = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString SecondLevelAddressTranslationExtensions = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString SocketDesignation = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString Status = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	FString ThreadCount = INFO_STR_UNKNOWN;
+
+	UPROPERTY()
+	int32 Index;
+
+	void LogToUE_LOG() const;
+};
+
+class SYSTEMINFORMATION_API FCPUInformationFetcher
+{
+public:
+	static TArray<FCPUInformation> FetchInfo();
+
+private:
+	static void TryFetchField(const FString& iter, const char* fieldName, FString& outValue);
+
+	static const char* TranslateArchitecture(const FString& architecture);
+	static const char* TranslateAvailability(const FString& availability);
+	static const char* TranslateFamiliy(const FString& family);
+};
