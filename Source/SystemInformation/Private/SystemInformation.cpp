@@ -23,50 +23,87 @@ void FSystemInformation::FetchInfo()
 	m_RAMsInfo = FRAMInformationFetcher::FetchInfo();
 	m_HardDisksInfo = FHardDiskInformationFetcher::FetchInfo();
 
+	FJsonDomBuilder::FObject object;
+
 	for (auto it : m_MotherboardsInfo)
 	{
- 		FString motherboardJsonString;
-		if (FJsonObjectConverter::UStructToJsonObjectString(it, motherboardJsonString))
+		FString key = TEXT("Motherboard");
+		key.AppendInt(it.Index);
+
+		FString value;
+
+		if (!FJsonObjectConverter::UStructToJsonObjectString(it, value, 0, 0, 0, nullptr, false))
 			UE_LOG(LogTemp, Error, TEXT(""));
+
+		object.Set(key, value);
 	}
 	
 	for (auto it : m_OperatingSystemsInfo)
 	{
-		FString operatingSystemJsonString;
-		if (FJsonObjectConverter::UStructToJsonObjectString(it, operatingSystemJsonString))
+		FString key = TEXT("OperatingSystem");
+		key.AppendInt(it.Index);
+
+		FString value;
+		if (!FJsonObjectConverter::UStructToJsonObjectString(it, value, 0, 0, 0, nullptr, false))
 			UE_LOG(LogTemp, Error, TEXT(""));
+
+		object.Set(key, value);
 	}
-	
+
+	for (auto it : m_CPUsInfo)
+	{
+		FString key = TEXT("CPU");
+		key.AppendInt(it.Index);
+
+		FString value;
+		if (!FJsonObjectConverter::UStructToJsonObjectString(it, value, 0, 0, 0, nullptr, false))
+			UE_LOG(LogTemp, Error, TEXT(""));
+
+		object.Set(key, value);
+	}
+
 	for (auto it : m_GPUsInfo)
 	{
-		FString gpuJsonString;
-		if (FJsonObjectConverter::UStructToJsonObjectString(it, gpuJsonString))
+		FString key = TEXT("GPU");
+		key.AppendInt(it.Index);
+
+		FString value;
+		if (!FJsonObjectConverter::UStructToJsonObjectString(it, value, 0, 0, 0, nullptr, false))
 			UE_LOG(LogTemp, Error, TEXT(""));
+
+		object.Set(key, value);
 	}
-	
+
+
 	for (auto it : m_RAMsInfo)
 	{
-		FString ramJsonString;
-		if (FJsonObjectConverter::UStructToJsonObjectString(it, ramJsonString))
+		FString key = TEXT("RAM");
+		key.AppendInt(it.Index);
+
+		FString value;
+		if (!FJsonObjectConverter::UStructToJsonObjectString(it, value, 0, 0, 0, nullptr, false))
 			UE_LOG(LogTemp, Error, TEXT(""));
+
+		object.Set(key, value);
 	}
 	
 	for (auto it : m_HardDisksInfo)
 	{
-		FString hardDiskJsonString;
-	
-		if (FJsonObjectConverter::UStructToJsonObjectString(it, hardDiskJsonString))
+		FString key = TEXT("HardDisk");
+		key.AppendInt(it.Index);
+
+		FString value;
+		if (!FJsonObjectConverter::UStructToJsonObjectString(it, value, 0, 0, 0, nullptr, false))
 			UE_LOG(LogTemp, Error, TEXT(""));
+
+		object.Set(key, value);
 	}
 
-	// FJsonDomBuilder::FArray InnerArray;
-	// InnerArray.Add(7.f, TEXT("Hello"), true);
-	// 
-	// FJsonDomBuilder::FObject Object;
-	// Object.Set(TEXT("Array"), InnerArray);
-	// Object.Set(TEXT("Number"), 13.f);
-	// 
-	// Object.AsJsonValue();
+	FString jsonString = object.ToString<TCondensedJsonPrintPolicy>();
+	jsonString = jsonString.Replace(TEXT("\\"), TEXT(""));
+	jsonString = jsonString.Replace(TEXT("\"{"), TEXT("{"));
+	jsonString = jsonString.Replace(TEXT("}\""), TEXT("}"));
+	FFileHelper::SaveStringToFile(jsonString, *(FPaths::ProjectContentDir() + TEXT("json/test.json")));
 }
 
 void FSystemInformationModule::StartupModule()

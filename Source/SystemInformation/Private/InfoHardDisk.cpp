@@ -78,12 +78,12 @@ void FHardDiskInformationFetcher::TryFetchArrayField(const FString& iter, const 
 
 	if (iter.Find(fieldName) == 0u)
 	{
-		FString fieldValues = iter.Mid(iter.Find("{") + 2, iter.Find("{") - iter.Find("{") - 3);
+		FString fieldValues = iter.Mid(iter.Find("{") + 2, iter.Find("}") - iter.Find("{") - 3);
 
 		size_t pos;
 		while ((pos = fieldValues.Find("\",\"")) != std::string::npos)
 		{
-			outValue.Push(fieldValues.LeftChop(pos));
+			outValue.Push(fieldValues.Mid(0u, pos));
 			fieldValues.RemoveAt(0, pos + 3);
 		}
 
