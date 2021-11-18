@@ -11,35 +11,34 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(LogSystemInfo, Log, All)
 
-enum class ESysdtemInfoDataUnit
+enum class ESystemInfoDataUnit : uint64_t
 {
-	Byte = 1000000000,
-	KiloByte = 1000000,
-	MegaByte = 1000,
-	GigaByte = 1,
+	GigaByte = 1u,
+	MegaByte = GigaByte * 1024u,
+	KiloByte = MegaByte * 1024u,
+	Byte = KiloByte * 1024u,
 };
 
-static const char* ConvertDataUnits(const FString& value, ESysdtemInfoDataUnit valueUnit, ESysdtemInfoDataUnit outUnit = ESysdtemInfoDataUnit::GigaByte)
+static const char* ConvertDataUnits(const FString& valueStr, ESystemInfoDataUnit valueUnit, ESystemInfoDataUnit outUnit = ESystemInfoDataUnit::GigaByte)
 {
 	try
 	{
 		// convert value
-		double valueInt = FCString::Atod(*value);
+		double valueNumeric = FCString::Atod(*valueStr);
 		double t = (double)valueUnit / (double)outUnit;
-		double outInt = std::floor((valueInt / t) * std::pow(10.0, INFO_DECIMAL_POINTS)) / std::pow(10.0, INFO_DECIMAL_POINTS);
+		double outNumeric = std::floor((valueNumeric / t) * std::pow(10.0, INFO_DECIMAL_POINTS)) / std::pow(10.0, INFO_DECIMAL_POINTS);
 
-		std::string outStr = std::to_string(outInt);
+		std::string outStr = std::to_string(outNumeric);
 		outStr = outStr.substr(0ull, outStr.find('.') + static_cast<size_t>(INFO_DECIMAL_POINTS) + 1ull);
-
 
 		// determine suffix
 		const char* suffix = "";
 		switch (outUnit)
 		{
-		case ESysdtemInfoDataUnit::Byte: suffix = " Bytes"; break;
-		case ESysdtemInfoDataUnit::KiloByte: suffix = " KB"; break;
-		case ESysdtemInfoDataUnit::MegaByte: suffix = " MB"; break;
-		case ESysdtemInfoDataUnit::GigaByte: suffix = " GB"; break;
+		case ESystemInfoDataUnit::Byte: suffix = " Bytes"; break;
+		case ESystemInfoDataUnit::KiloByte: suffix = " KB"; break;
+		case ESystemInfoDataUnit::MegaByte: suffix = " MB"; break;
+		case ESystemInfoDataUnit::GigaByte: suffix = " GB"; break;
 		}
 
 		return (outStr + suffix).c_str();
@@ -47,7 +46,7 @@ static const char* ConvertDataUnits(const FString& value, ESysdtemInfoDataUnit v
 	catch (std::exception e)
 	{
 		(void)e;
-		UE_LOG(LogTemp, Error, TEXT("Failed to convert data units: %s "), *value);
+		UE_LOG(LogTemp, Error, TEXT("Failed to convert data units: %s "), *valueStr);
 		return INFO_STR_UNKNOWN;
 	}
 }

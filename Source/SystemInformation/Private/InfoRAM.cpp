@@ -46,7 +46,7 @@ TArray<FRAMInformation> FRAMInformationFetcher::FetchInfo()
 			ramInfo.TypeDetail = TranslateFormFactor(ramInfo.TypeDetail);
 
 			// convert values
-			ramInfo.Capacity = ConvertDataUnits(ramInfo.Capacity, ESysdtemInfoDataUnit::Byte);
+			ramInfo.Capacity = ConvertDataUnits(ramInfo.Capacity, ESystemInfoDataUnit::Byte);
 
 
 			// information that could be extracted from the 'wmic' command ends here

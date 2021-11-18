@@ -60,7 +60,7 @@ TArray<FGPUInformation> FGPUInformationFetcher::FetchInfo()
 			gpuInfo.VideoMemoryType = TranslateVideoMemoryType(gpuInfo.VideoMemoryType);
 
 			// convert values
-			gpuInfo.AdapterRAM = ConvertDataUnits(gpuInfo.AdapterRAM, ESysdtemInfoDataUnit::Byte);
+			gpuInfo.AdapterRAM = ConvertDataUnits(gpuInfo.AdapterRAM, ESystemInfoDataUnit::Byte);
 
 
 			// information that could be extracted from the 'wmic' command ends here

@@ -28,199 +28,225 @@ A system information collector plugin for unreal engine
 
 ### Sample output:
 ```
-Motherboard #1 {
-    Manufacturer = ASUSTeK COMPUTER INC.
-    Product = ROG MAXIMUS XII HERO (WI-FI)
-    Status = OK
-    Version = Rev 1.xx
-}
-
-Operating System #1 {
-    BuildNumber = 19043
-    BuildType = Multiprocessor Free
-    DataExecutionPrevention_32BitApplications = TRUE
-    DataExecutionPrevention_Available = TRUE
-    DataExecutionPrevention_Drivers = TRUE
-    DataExecutionPrevention_SupportPolicy = Opt In
-    Distributed = FALSE
-    ForegroundApplicationBoost = Maximum
-    FreePhysicalMemory = 17.35 GB
-    FreeSpaceInPagingFiles = 4.85 GB
-    FreeVirtualMemory = 12.87 GB
-    Manufacturer = Microsoft Corporation
-    MaxNumberOfProcesses = 4294967295
-    MaxProcessMemorySize = 137438.95 GB
-    OSArchitecture = 64-bit
-    PortableOperatingSystem = FALSE
-    Primary = TRUE
-    ProductType = Work Station
-    Status = OK
-    TotalVirtualMemorySize = 38.41 GB
-    TotalVisibleMemorySize = 33.43 GB
-    Version = 10.0.19043
-}
-
-CPU #1 {
-    Architecture = x64
-    Availability = Running/Full Power
-    Caption = Intel64 Family 6 Model 165 Stepping 5
-    Characteristics = 252
-    CpuStatus = 1
-    CurrentClockSpeed = 2808
-    CurrentVoltage = 9
-    Description = Intel64 Family 6 Model 165 Stepping 5
-    DeviceID = CPU0
-    ExtClock = 100
-    Family = Intel(R) Core(TM) i9 processor
-    L2CacheSize = 2560
-    L3CacheSize = 20480
-    LoadPercentage = 1
-    Manufacturer = GenuineIntel
-    MaxClockSpeed = 2808
-    NumberOfCores = 10
-    NumberOfEnabledCore = 10
-    NumberOfLogicalProcessors = 20
-    SecondLevelAddressTranslationExtensions = FALSE
-    SocketDesignation = LGA1200
-    Status = OK
-    ThreadCount = 20
-}
-
-GPU #1 {
-    AdapterCompatibility = NVIDIA
-    AdapterDACType = Integrated RAMDAC
-    AdapterRAM = 4.29 GB
-    Availability = Running/Full Power
-    Caption = NVIDIA GeForce RTX 3060
-    CurrentBitsPerPixel = 32
-    CurrentHorizontalResolution = 2560
-    CurrentNumberOfColors = 4294967296
-    CurrentRefreshRate = 59
-    CurrentScanMode = Non Interlaced
-    CurrentVerticalResolution = 1440
-    Description = NVIDIA GeForce RTX 3060
-    DeviceID = VideoController1
-    DriverDate = 20210805000000.000000-000
-    DriverVersion = 30.0.14.7168
-    InfFilename = oem45.inf
-    InfSection = Section182
-    InstalledDisplayDrivers = C:\Windows\System32\DriverStore\FileRepository\nv_dispsi.inf_amd64_608fde4925c44666\nvldumdx.dll,C:\Windows\System32\DriverStore\FileRepository\nv_dispsi.inf_amd64_608fde4925c44666\nvldumdx.dll,C:\Windows\System32\DriverStore\FileRepository\nv_dispsi.inf_amd64_608fde4925c44666\nvldumdx.dll,C:\Windows\System32\DriverStore\FileRepository\nv_dispsi.inf_amd64_608fde4925c44666\nvldumdx.dll
-    MaxRefreshRate = 144
-    MinRefreshRate = 29
-    Monochrome = FALSE
-    Name = NVIDIA GeForce RTX 3060
-    Status = OK
-    VideoArchitecture = VGA
-    VideoMemoryType = Unknown
-    VideoModeDescription = 2560 x 1440 x 4294967296 colors
-    VideoProcessor = NVIDIA GeForce RTX 3060
-}
-
-RAM #1 {
-    Capacity = 17.17 GB
-    ConfiguredClockSpeed = 2666
-    ConfiguredVoltage = 1200
-    DataWidth = 64
-    DeviceLocator = ChannelA-DIMM2
-    FormFactor = DIMM
-    InterleaveDataDepth = 2
-    InterleavePosition = 1
-    Manufacturer = G-Skill
-    MaxVoltage = 1200
-    MinVoltage = 1200
-    PartNumber = F4-3200C16-16GTZ    
-    MinVoltage = 1200
-    SMBIOSMemoryType = N/A
-    Speed = 2666
-    Tag = Physical Memory 1
-    TotalWidth = 64
-    TypeDetail = N/A
-}
-
-RAM #2 {
-    Capacity = 17.17 GB
-    ConfiguredClockSpeed = 2666
-    ConfiguredVoltage = 1200
-    DataWidth = 64
-    DeviceLocator = ChannelB-DIMM2
-    FormFactor = DIMM
-    InterleaveDataDepth = 2
-    InterleavePosition = 2
-    Manufacturer = G-Skill
-    MaxVoltage = 1200
-    MinVoltage = 1200
-    PartNumber = F4-3200C16-16GTZ    
-    MinVoltage = 1200
-    SMBIOSMemoryType = N/A
-    Speed = 2666
-    Tag = Physical Memory 3
-    TotalWidth = 64
-    TypeDetail = N/A
-}
-
-Hard Disk #1 {
-    BytesPerSector = 512
-    Capabilities {
-        Random Access
-        Supports Writing
+{
+    "Motherboard1": {
+        "manufacturer": "ASUSTeK COMPUTER INC.",
+        "product": "ROG MAXIMUS XII HERO (WI-FI)",
+        "status": "OK",
+        "version": "Rev 1.xx",
+        "index": 1
+    },
+    "OperatingSystem1": {
+        "buildNumber": "19043",
+        "buildType": "Multiprocessor Free",
+        "caption": "Microsoft Windows 10 Pro",
+        "dataExecutionPrevention_32BitApplications": "TRUE",
+        "dataExecutionPrevention_Available": "TRUE",
+        "dataExecutionPrevention_Drivers": "TRUE",
+        "dataExecutionPrevention_SupportPolicy": "Opt In",
+        "distributed": "FALSE",
+        "foregroundApplicationBoost": "Maximum",
+        "freePhysicalMemory": "17.44 GB",
+        "freeSpaceInPagingFiles": "4.66 GB",
+        "freeVirtualMemory": "16.65 GB",
+        "manufacturer": "Microsoft Corporation",
+        "maxNumberOfProcesses": "4294967295",
+        "maxProcessMemorySize": "131071.99 GB",
+        "oSArchitecture": "64-bit",
+        "portableOperatingSystem": "FALSE",
+        "primary": "TRUE",
+        "productType": "Work Station",
+        "sizeStoredInPagingFiles": "4980736",
+        "status": "OK",
+        "totalVirtualMemorySize": "36.63 GB",
+        "totalVisibleMemorySize": "31.88 GB",
+        "version": "10.0.19043"
+    },
+    "CPU1": {
+        "architecture": "x64",
+        "availability": "Running/Full Power",
+        "caption": "Intel64 Family 6 Model 165 Stepping 5",
+        "characteristics": "252",
+        "cpuStatus": "1",
+        "currentClockSpeed": "2808",
+        "currentVoltage": "9",
+        "description": "Intel64 Family 6 Model 165 Stepping 5",
+        "deviceId": "CPU0",
+        "extClock": "100",
+        "family": "Intel(R) Core(TM) i9 processor",
+        "l2CacheSize": "2560",
+        "l3CacheSize": "20480",
+        "loadPercentage": "7",
+        "manufacturer": "GenuineIntel",
+        "maxClockSpeed": "2808",
+        "name": "Intel(R) Core(TM) i9-10900 CPU @ 2.80GHz",
+        "numberOfCores": "10",
+        "numberOfEnabledCore": "10",
+        "numberOfLogicalProcessors": "20",
+        "secondLevelAddressTranslationExtensions": "FALSE",
+        "socketDesignation": "LGA1200",
+        "status": "OK",
+        "threadCount": "20",
+        "index": 1
+    },
+    "GPU1": {
+        "adapterCompatibility": "NVIDIA",
+        "adapterDACType": "Integrated RAMDAC",
+        "adapterRAM": "3.99 GB",
+        "availability": "Running/Full Power",
+        "caption": "NVIDIA GeForce RTX 3060",
+        "currentBitsPerPixel": "32",
+        "currentHorizontalResolution": "2560",
+        "currentNumberOfColors": "4294967296",
+        "currentRefreshRate": "143",
+        "currentScanMode": "Non Interlaced",
+        "currentVerticalResolution": "1440",
+        "description": "NVIDIA GeForce RTX 3060",
+        "deviceId": "VideoController1",
+        "driverDate": "20210805000000.000000-000",
+        "driverVersion": "30.0.14.7168",
+        "infFilename": "oem45.inf",
+        "infSection": "Section182",
+        "installedDisplayDrivers": "C:WindowsSystem32DriverStoreFileRepositorynv_dispsi.inf_amd64_608fde4925c44666nvldumdx.dll,C:WindowsSystem32DriverStoreFileRepositorynv_dispsi.inf_amd64_608fde4925c44666nvldumdx.dll,C:WindowsSystem32DriverStoreFileRepositorynv_dispsi.inf_amd64_608fde4925c44666nvldumdx.dll,C:WindowsSystem32DriverStoreFileRepositorynv_dispsi.inf_amd64_608fde4925c44666nvldumdx.dll",
+        "maxRefreshRate": "143",
+        "minRefreshRate": "50",
+        "monochrome": "FALSE",
+        "name": "NVIDIA GeForce RTX 3060",
+        "status": "OK",
+        "videoArchitecture": "VGA",
+        "videoMemoryType": "Unknown",
+        "videoModeDescription": "2560 x 1440 x 4294967296 colors",
+        "videoProcessor": "NVIDIA GeForce RTX 3060",
+        "index": 1
+    },
+    "RAM1": {
+        "capacity": "16.00 GB",
+        "configuredClockSpeed": "2666",
+        "configuredVoltage": "1200",
+        "dataWidth": "64",
+        "deviceLocator": "ChannelA-DIMM2",
+        "formFactor": "DIMM",
+        "interleaveDataDepth": "2",
+        "interleavePosition": "1",
+        "manufacturer": "G-Skill",
+        "maxVoltage": "1200",
+        "minVoltage": "1200",
+        "partNumber": "F4-3200C16-16GTZ    ",
+        "sMBIOSMemoryType": "N/A",
+        "speed": "2666",
+        "tag": "Physical Memory 1",
+        "totalWidth": "64",
+        "typeDetail": "N/A",
+        "index": 1
+    },
+    "RAM2": {
+        "capacity": "16.00 GB",
+        "configuredClockSpeed": "2666",
+        "configuredVoltage": "1200",
+        "dataWidth": "64",
+        "deviceLocator": "ChannelB-DIMM2",
+        "formFactor": "DIMM",
+        "interleaveDataDepth": "2",
+        "interleavePosition": "2",
+        "manufacturer": "G-Skill",
+        "maxVoltage": "1200",
+        "minVoltage": "1200",
+        "partNumber": "F4-3200C16-16GTZ    ",
+        "sMBIOSMemoryType": "N/A",
+        "speed": "2666",
+        "tag": "Physical Memory 3",
+        "totalWidth": "64",
+        "typeDetail": "N/A",
+        "index": 2
+    },
+    "HardDisk1": {
+        "bytesPerSector": "512",
+        "capabilities": [
+            "Random Access",
+            "Supports Writing"
+        ],
+        "caption": "XPG SPECTRIX S40G",
+        "firmwareRevision": "VB421D57",
+        "interfaceType": "SCSI",
+        "manufacturer": "(Standard disk drives)",
+        "mediaType": "Fixed hard disk media",
+        "model": "XPG SPECTRIX S40G",
+        "sectorsPerTrack": "63",
+        "serialNumber": "0000_0000_0100_0000_4CE0_0018_DD8C_9084.",
+        "size": "476.93 GB",
+        "totalCylinders": "62260",
+        "totalHeads": "255",
+        "totalSectors": "1000206900",
+        "totalTracks": "15876300",
+        "tracksPerCylinder": "255",
+        "index": 1
+    },
+    "HardDisk2": {
+        "bytesPerSector": "512",
+        "capabilities": [
+            "Random Access",
+            "Supports Writing",
+            "Supports Removable Media"
+        ],
+        "caption": " USB  SanDisk 3.2Gen1 USB Device",
+        "firmwareRevision": "1.00",
+        "interfaceType": "USB",
+        "manufacturer": "(Standard disk drives)",
+        "mediaType": "Removable Media",
+        "model": " USB  SanDisk 3.2Gen1 USB Device",
+        "sectorsPerTrack": "63",
+        "serialNumber": "050101bd5ae8db2902a9",
+        "size": "114.60 GB",
+        "totalCylinders": "14961",
+        "totalHeads": "255",
+        "totalSectors": "240348465",
+        "totalTracks": "3815055",
+        "tracksPerCylinder": "255",
+        "index": 2
+    },
+    "HardDisk3": {
+        "bytesPerSector": "512",
+        "capabilities": [
+            "Random Access",
+            "Supports Writing"
+        ],
+        "caption": "WDC WD20EZBX-00AYRA0",
+        "firmwareRevision": "01.01A01",
+        "interfaceType": "IDE",
+        "manufacturer": "(Standard disk drives)",
+        "mediaType": "Fixed hard disk media",
+        "model": "WDC WD20EZBX-00AYRA0",
+        "sectorsPerTrack": "63",
+        "serialNumber": "     WD-WXT2AC0N1J68",
+        "size": "1863.01 GB",
+        "totalCylinders": "243201",
+        "totalHeads": "255",
+        "totalSectors": "3907024065",
+        "totalTracks": "62016255",
+        "tracksPerCylinder": "255",
+        "index": 3
+    },
+    "HardDisk4": {
+        "bytesPerSector": "512",
+        "capabilities": [
+            "Random Access",
+            "Supports Writing"
+        ],
+        "caption": "XPG SPECTRIX S40G",
+        "firmwareRevision": "VB421D57",
+        "interfaceType": "SCSI",
+        "manufacturer": "(Standard disk drives)",
+        "mediaType": "Fixed hard disk media",
+        "model": "XPG SPECTRIX S40G",
+        "sectorsPerTrack": "63",
+        "serialNumber": "0000_0000_0100_0000_4CE0_0018_DD8C_9084.",
+        "size": "476.93 GB",
+        "totalCylinders": "62260",
+        "totalHeads": "255",
+        "totalSectors": "1000206900",
+        "totalTracks": "15876300",
+        "tracksPerCylinder": "255",
+        "index": 4
     }
-    Caption = XPG SPECTRIX S40G
-    FirmwareRevision = VB421D57
-    InterfaceType = SCSI
-    Manuafacturer = (Standard disk drives)
-    MediaType = Fixed hard disk media
-    Model = XPG SPECTRIX S40G
-    SectorsPerTrack = 63
-    SerialNumber = 0000_0000_0100_0000_4CE0_0018_DD8C_9084.
-    Size = 512.10 GB
-    TotalCylinders = 62260
-    TotalHeads = 255
-    TotalSectors = 1000206900
-    TotalTracks = 15876300
-    TracksPerCylinder = 255
-}
-
-Hard Disk #2 {
-    BytesPerSector = 512
-    Capabilities {
-        Random Access
-        Supports Writing
-    }
-    Caption = WDC WD20EZBX-00AYRA0
-    FirmwareRevision = 01.01A01
-    InterfaceType = IDE
-    Manuafacturer = (Standard disk drives)
-    MediaType = Fixed hard disk media
-    Model = WDC WD20EZBX-00AYRA0
-    SectorsPerTrack = 63
-    SerialNumber =      WD-WXT2AC0N1J68
-    Size = 2000.39 GB
-    TotalCylinders = 243201
-    TotalHeads = 255
-    TotalSectors = 3907024065
-    TotalTracks = 62016255
-    TracksPerCylinder = 255
-}
-
-Hard Disk #3 {
-    BytesPerSector = 512
-    Capabilities {
-        Random Access
-        Supports Writing
-    }
-    Caption = XPG SPECTRIX S40G
-    FirmwareRevision = VB421D57
-    InterfaceType = SCSI
-    Manuafacturer = (Standard disk drives)
-    MediaType = Fixed hard disk media
-    Model = XPG SPECTRIX S40G
-    SectorsPerTrack = 63
-    SerialNumber = 0000_0000_0100_0000_4CE0_0018_DD8C_9084.
-    Size = 512.10 GB
-    TotalCylinders = 62260
-    TotalHeads = 255
-    TotalSectors = 1000206900
-    TotalTracks = 15876300
-    TracksPerCylinder = 255
 }
 ```

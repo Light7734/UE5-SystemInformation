@@ -56,12 +56,12 @@ TArray<FOperatingSystemInformation> FOperatingSystemInformationFetcher::FetchInf
 			operatingSystemInfo.ProductType = TranslateProductType(operatingSystemInfo.ProductType);
 
 			// convert values
-			operatingSystemInfo.FreePhysicalMemory = ConvertDataUnits(operatingSystemInfo.FreePhysicalMemory, ESysdtemInfoDataUnit::KiloByte);
-			operatingSystemInfo.FreeSpaceInPagingFiles = ConvertDataUnits(operatingSystemInfo.FreeSpaceInPagingFiles, ESysdtemInfoDataUnit::KiloByte);
-			operatingSystemInfo.FreeVirtualMemory = ConvertDataUnits(operatingSystemInfo.FreeVirtualMemory, ESysdtemInfoDataUnit::KiloByte);
-			operatingSystemInfo.MaxProcessMemorySize = ConvertDataUnits(operatingSystemInfo.MaxProcessMemorySize, ESysdtemInfoDataUnit::KiloByte);
-			operatingSystemInfo.TotalVirtualMemorySize = ConvertDataUnits(operatingSystemInfo.TotalVirtualMemorySize, ESysdtemInfoDataUnit::KiloByte);
-			operatingSystemInfo.TotalVisibleMemorySize = ConvertDataUnits(operatingSystemInfo.TotalVisibleMemorySize, ESysdtemInfoDataUnit::KiloByte);
+			operatingSystemInfo.FreePhysicalMemory = ConvertDataUnits(operatingSystemInfo.FreePhysicalMemory, ESystemInfoDataUnit::KiloByte);
+			operatingSystemInfo.FreeSpaceInPagingFiles = ConvertDataUnits(operatingSystemInfo.FreeSpaceInPagingFiles, ESystemInfoDataUnit::KiloByte);
+			operatingSystemInfo.FreeVirtualMemory = ConvertDataUnits(operatingSystemInfo.FreeVirtualMemory, ESystemInfoDataUnit::KiloByte);
+			operatingSystemInfo.MaxProcessMemorySize = ConvertDataUnits(operatingSystemInfo.MaxProcessMemorySize, ESystemInfoDataUnit::KiloByte);
+			operatingSystemInfo.TotalVirtualMemorySize = ConvertDataUnits(operatingSystemInfo.TotalVirtualMemorySize, ESystemInfoDataUnit::KiloByte);
+			operatingSystemInfo.TotalVisibleMemorySize = ConvertDataUnits(operatingSystemInfo.TotalVisibleMemorySize, ESystemInfoDataUnit::KiloByte);
 
 
 			// information that could be extracted from the 'wmic' command ends here

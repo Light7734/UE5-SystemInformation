@@ -43,7 +43,7 @@ TArray<FHardDiskInformation> FHardDiskInformationFetcher::FetchInfo()
 			hardDiskInfo.Index = index++;
 
 			// convert values
-			hardDiskInfo.Size = ConvertDataUnits(hardDiskInfo.Size, ESysdtemInfoDataUnit::Byte);
+			hardDiskInfo.Size = ConvertDataUnits(hardDiskInfo.Size, ESystemInfoDataUnit::Byte);
 
 
 			// information that could be extracted from the 'wmic' command ends here
