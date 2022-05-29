@@ -14,11 +14,9 @@ A system information collector plugin for unreal engine
 
 ## Future of this project
 * Linux support
-* Temperature Info
-* More details about each hardware
-* XML output
 
 ## Getting Started
+ NOTE: Linux platform depends on `lshw` to be installed.
  
 1. `git clone https://github.com/light3039/ue5-systeminformation <PROJECT_DIR>/Plugins/SystemInformation`
 2. Add `"SystemInformation"` to <MODULE_NAME>.Build.cs `PublicDependencyModuleNames.AddRange...`
