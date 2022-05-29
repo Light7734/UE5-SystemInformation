@@ -20,6 +20,12 @@ private:
 public:
 	FSystemInformation() = delete;
 
+	// Write the hardware information to (ProjectSavedDir + FileName)
+	static void WriteToJsonFile(FString FileName, bool bShouldRefetch = false);
+	
+	/*
+	 * Getters
+	 */
 	static inline const TArray<FMotherboardInformation>& GetMotherboardsInfo() { return m_MotherboardsInfo; }
 	static inline const TArray<FOperatingSystemInformation>& GetOperatingSystemsInfo() { return m_OperatingSystemsInfo; }
 	static inline const TArray<FCPUInformation>& GetCPUsInfo() { return m_CPUsInfo; }
@@ -28,6 +34,7 @@ public:
 	static inline const TArray<FHardDiskInformation>& GetHardDisksInfo() { return m_HardDisksInfo; }
 
 private:
+	// Fetch information for all hardware
 	static void FetchInfo();
 
 private:

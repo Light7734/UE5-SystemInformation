@@ -1,5 +1,5 @@
 #include "InfoRAM.h"
-#include "systemcommand.h"
+#include "SystemCommand.h"
 
 TArray<FRAMInformation> FRAMInformationFetcher::FetchInfo()
 {

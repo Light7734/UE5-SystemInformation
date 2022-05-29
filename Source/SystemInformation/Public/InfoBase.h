@@ -19,14 +19,14 @@ enum class ESystemInfoDataUnit : uint64_t
 	Byte = KiloByte * 1024u,
 };
 
-static const char* ConvertDataUnits(const FString& valueStr, ESystemInfoDataUnit valueUnit, ESystemInfoDataUnit outUnit = ESystemInfoDataUnit::GigaByte)
+static FString ConvertDataUnits(const FString& valueStr, ESystemInfoDataUnit valueUnit, ESystemInfoDataUnit outUnit = ESystemInfoDataUnit::GigaByte)
 {
 	try
 	{
 		// convert value
 		double valueNumeric = FCString::Atod(*valueStr);
 		double t = (double)valueUnit / (double)outUnit;
-		double outNumeric = std::floor((valueNumeric / t) * std::pow(10.0, INFO_DECIMAL_POINTS)) / std::pow(10.0, INFO_DECIMAL_POINTS);
+		double outNumeric = ::floor((valueNumeric / t) * std::pow(10.0, INFO_DECIMAL_POINTS)) / std::pow(10.0, INFO_DECIMAL_POINTS);
 
 		std::string outStr = std::to_string(outNumeric);
 		outStr = outStr.substr(0ull, outStr.find('.') + static_cast<size_t>(INFO_DECIMAL_POINTS) + 1ull);
@@ -41,7 +41,8 @@ static const char* ConvertDataUnits(const FString& valueStr, ESystemInfoDataUnit
 		case ESystemInfoDataUnit::GigaByte: suffix = " GB"; break;
 		}
 
-		return (outStr + suffix).c_str();
+		auto out = outStr + suffix;
+		return FString(out.c_str());
 	}
 	catch (std::exception e)
 	{
